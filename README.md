@@ -125,7 +125,10 @@ without a named room needs 0.30 more confidence. The light-command exceptions
 move with the configured domain or target values: explicit light domain uses
 0.20 less confidence; a named room light group uses 0.15 less confidence and
 0.10 more selected probability; a named fixture uses 0.05 less confidence and
-0.10 more selected probability. Derived values are clamped to 0–1. The
+0.10 more selected probability. When an explicitly named room and a distinctive
+word from just one approved light name or HA label agree with Laya's choice,
+the target gate uses 0.60 less confidence and 0.30 less selected probability.
+Derived values are clamped to 0–1. The
 allowlist, local area checks, action veto, and permission checks still apply.
 
 In a no-service-call check using a sample two-room catalog, 19 of 20 Russian

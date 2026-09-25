@@ -58,6 +58,8 @@ class Thresholds:
             "room_target_probability": min(1, self.target_probability + 0.1),
             "fixture_target_confidence": max(0, self.target_confidence - 0.05),
             "fixture_target_probability": min(1, self.target_probability + 0.1),
+            "unique_name_confidence": max(0, self.target_confidence - 0.6),
+            "unique_name_probability": max(0, self.target_probability - 0.3),
             "unnamed_temperature_confidence": min(1, self.temperature_confidence + 0.3),
         }
 
@@ -241,6 +243,26 @@ def is_specific_light_request(text: str, individuals: list[Target], area: str | 
     return False
 
 
+def unique_target_name_anchor(text: str, target: Target, candidates: list[Target],
+                              area: str, language: str | None = None) -> bool:
+    """Require a distinctive spoken name word in the explicitly named room."""
+    if target.area != area or target.kind != "light_entity":
+        return False
+    locale = get_locale(language)
+    ignored = {word for term in locale.light_terms for word in _words(term)}
+    ignored.update({"свет", "света", "свете", "освещение", "лампа", "лампы",
+                    "light", "lights", "lamp", "lamps"})
+    room_stems = {word[:4] for word in _words(area) if len(word) >= 4}
+
+    def stems(item: Target) -> set[str]:
+        return {word[:4] for name in (item.label, *item.aliases) for word in _words(name)
+                if len(word) >= 4 and word not in ignored and word[:4] not in room_stems}
+
+    spoken = {word[:4] for word in _words(text) if len(word) >= 4}
+    others = set().union(*(stems(item) for item in candidates if item.key != target.key))
+    return bool((stems(target) & spoken) - others)
+
+
 def whole_home_request(text: str, language: str | None = None) -> bool:
     locale = get_locale(language)
     return any(term.casefold() in text.casefold() for term in WHOLE_HOME_TERMS[locale.code])
@@ -378,6 +400,9 @@ def selected_target(answers: dict, text: str, candidates: list[Target],
         return None
     best = max((item for item in (first, second) if isinstance(item, dict)),
                key=lambda item: item.get("confidence", 0))
+    if unique_target_name_anchor(text, target, candidates, named_area, language):
+        return target if _soft_choice(best, soft_gates["unique_name_confidence"],
+                                      soft_gates["unique_name_probability"]) == key else None
     if target.kind == "light_group" and second is not None:
         return target if _soft_choice(best, soft_gates["room_target_confidence"],
                                       soft_gates["room_target_probability"]) == key else None

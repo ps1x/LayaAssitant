@@ -20,7 +20,7 @@ for name in ("const", "routing"):
 from laya_assistant.routing import (  # noqa: E402
     Target, Thresholds, best_action, choice, domain_request, explicit_action,
     light_group_label, mentioned_area, selected_domain, selected_target,
-    target_candidates, valid_target,
+    target_candidates, unique_target_name_anchor, valid_target,
 )
 from laya_assistant.locale import LOCALES, get_locale  # noqa: E402
 from laya_assistant.aliases import parse_area_overrides, parse_spoken_names  # noqa: E402
@@ -171,6 +171,16 @@ class RoutingTests(unittest.TestCase):
         request = __import__("laya_assistant.routing", fromlist=["target_request"]).target_request(
             "включи свет в рабочей зоне кухни", "on_off", [target], None, "ru")
         self.assertIn("кухня рабочая зона", request["questions"]["target"]["criteria"]["e0"])
+        other = Target("e1", "свет над столом", ("switch.table",), "Кухня", "light_entity")
+        selected = {"target": answer("e0", 0.2357, 0.6735)}
+        self.assertTrue(unique_target_name_anchor("включи кухня над рабочей зоной",
+                                                  target, [target, other], "Кухня", "ru"))
+        self.assertEqual(selected_target(selected, "включи кухня над рабочей зоной",
+                                         [target, other], "ru"), target)
+        ambiguous = Target("e2", "рабочая зона 2", ("switch.other",), "Кухня",
+                           "light_entity")
+        self.assertIsNone(selected_target(selected, "включи кухня над рабочей зоной",
+                                          [target, ambiguous], "ru"))
 
     def test_debug_contains_all_probabilities_without_raw_request(self):
         answers = summarize_answers({"domain": answer("temperature", 0.91, 0.93)})
