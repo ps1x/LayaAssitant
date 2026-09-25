@@ -134,9 +134,9 @@ class RoutingTests(unittest.TestCase):
             parse_area_overrides(raw, {"switch.other"})
         sensor = Target("e0", "Температура в гостиной", ("sensor.living",),
                         "Гостиная", "temperature")
-        self.assertEqual(selected_target({"target": answer("e0", 0.42, 0.86)},
-                                         "какая температура в гостиной", [sensor], "ru"), sensor)
-        self.assertIsNone(selected_target({"target": answer("e0", 0.35, 0.92)},
+        self.assertEqual(selected_target({"target": answer("e0", 0.367, 0.8405)},
+                                         "какая температура в гостинной", [sensor], "ru"), sensor)
+        self.assertIsNone(selected_target({"target": answer("e0", 0.29, 0.92)},
                                           "какая температура в гостиной", [sensor], "ru"))
 
     def test_unassigned_lights_do_not_become_an_implicit_room_group(self):

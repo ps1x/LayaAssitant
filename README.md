@@ -72,7 +72,7 @@ make the first start slower than later starts. The add-on supports `amd64` and
   at 0.60/0.80. A room-light target can pass at 0.65/0.90 only when two Laya
   target questions agree and the spoken room matches the approved HA area; a
   named fixture can pass at 0.75/0.90 only when its name and area match the
-  request. A unique read-only temperature sensor can pass at 0.40/0.80 when its
+  request. A unique read-only temperature sensor can pass at 0.30/0.80 when its
   configured room is explicitly named, or at 0.60/0.80 for an unnamed room.
   The action still requires 0.80/0.80. Unavailable entities, unlisted
   targets, ambiguous rooms, and contradictory action words are rejected before
