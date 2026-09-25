@@ -39,6 +39,21 @@ def choice(answer: object) -> str | None:
     return selected
 
 
+def _soft_choice(answer: object, min_confidence: float, min_probability: float) -> str | None:
+    if not isinstance(answer, dict) or answer.get("type") != "choice":
+        return None
+    selected = answer.get("choice")
+    probabilities = answer.get("probabilities")
+    if not isinstance(selected, str) or not isinstance(probabilities, dict):
+        return None
+    confidence = answer.get("confidence")
+    probability = probabilities.get(selected)
+    if any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v)
+           or not 0 <= v <= 1 for v in (confidence, probability)):
+        return None
+    return selected if confidence >= min_confidence and probability >= min_probability else None
+
+
 def _words(text: str) -> list[str]:
     return re.findall(r"[\w]+", text.casefold(), flags=re.UNICODE)
 
@@ -76,6 +91,19 @@ def light_group_label(area: str, language: str | None = None) -> str:
         location = area + "е"
     preposition = "на" if lower.startswith("кухн") else "в"
     return f"свет {preposition} {location.casefold()}"
+
+
+def _russian_genitive(area: str) -> str:
+    name = area.casefold()
+    if name.endswith("ая"):
+        return name[:-2] + "ой"
+    if name.endswith("ня"):
+        return name[:-1] + "и"
+    if name.endswith("а"):
+        return name[:-1] + "ы"
+    if name.endswith("ь"):
+        return name[:-1] + "и"
+    return name + "а"
 
 
 def mentioned_area(text: str, areas: set[str]) -> str | None:
@@ -123,6 +151,19 @@ def is_light_request(text: str, language: str | None = None) -> bool:
     locale = get_locale(language or ("ru" if _russian(text) else "en"))
     words = text.casefold()
     return any(term.casefold() in words for term in locale.light_terms)
+
+
+def selected_domain(answer: object, text: str, language: str | None = None) -> str | None:
+    strict = choice(answer)
+    if strict:
+        return strict
+    # A direct spoken light command anchors a hesitant on/off choice; later
+    # target and action stages still have to agree and pass their own checks.
+    if explicit_action(text, language) and is_light_request(text, language):
+        soft = _soft_choice(answer, 0.6, 0.8)
+        if soft == "on_off":
+            return soft
+    return None
 
 
 def is_specific_light_request(text: str, individuals: list[Target], area: str | None,
@@ -185,7 +226,8 @@ def target_candidates(
             return [t for t in targets if t.kind == "all_lights"]
         room = area or caller_area
         if is_specific_light_request(text, light_entities, room, language):
-            return [t for t in light_entities if t.area == room]
+            return ([t for t in light_groups if t.area == room]
+                    + [t for t in light_entities if t.area == room])
         return light_groups
     return [t for t in targets if t.kind in {"light_entity", "switch", "fan", "climate"}]
 
@@ -212,7 +254,7 @@ def target_request(text: str, domain: str, candidates: list[Target], caller_area
         instructions = locale.target_prompts[0]
     elif all(t.kind == "light_group" for t in candidates):
         instructions = locale.target_prompts[1]
-    elif all(t.kind == "light_entity" for t in candidates):
+    elif all(t.kind in {"light_entity", "light_group"} for t in candidates):
         instructions = locale.target_prompts[2]
     else:
         instructions = locale.target_prompts[3]
@@ -224,15 +266,59 @@ def target_request(text: str, domain: str, candidates: list[Target], caller_area
         instructions = "Choose the room explicitly mentioned by the user"
     none = ("другое" if locale.code == "ru" and all(t.kind == "light_group" for t in candidates)
             else locale.none_target)
-    criteria = {
-        t.key: (_room_criterion(t.area, locale.code) if locale.code in {"ar", "bn", "ur"}
-                and t.kind == "light_group" and t.area else t.label)
-        for t in candidates
-    }
-    return _wire(text, {"target": {
+    criteria = {}
+    for target in candidates:
+        label = (_room_criterion(target.area, locale.code)
+                 if locale.code in {"ar", "bn", "ur"} and target.kind == "light_group" and target.area
+                 else target.label)
+        if locale.code == "ru" and any(item.kind == "light_entity" for item in candidates):
+            if target.kind == "light_group" and target.area:
+                label += f", общий свет {_russian_genitive(target.area)}"
+            elif "верхн" in label.casefold():
+                label += ", люстра, потолочный свет"
+        criteria[target.key] = label
+    questions = {"target": {
             "type": "choice", "instructions": instructions,
             "criteria": {**criteria, "none": none},
-        }}, locale, target=True)
+        }}
+    if locale.code == "ru" and all(target.kind == "light_group" for target in candidates):
+        questions["target"]["criteria"] = {
+            **{target.key: f"{target.label} / освещение {_russian_genitive(target.area)}"
+               for target in candidates if target.area},
+            "none": "другое",
+        }
+        questions["target_check"] = {
+            "type": "choice", "instructions": "Какая цель указана пользователем?",
+            "criteria": {**{target.key: f"{target.area}: свет, освещение"
+                            for target in candidates if target.area}, "none": "другое"},
+        }
+    return _wire(text, questions, locale, target=True)
+
+
+def selected_target(answers: dict, text: str, candidates: list[Target],
+                    language: str | None = None) -> Target | None:
+    first = answers.get("target")
+    second = answers.get("target_check")
+    raw = [item.get("choice") for item in (first, second) if isinstance(item, dict)]
+    if not raw or len(set(raw)) > 1:
+        return None
+    key = raw[0]
+    target = next((item for item in candidates if item.key == key), None)
+    if target is None:
+        return None
+    valid = [item for item in (first, second) if item is not None and choice(item) == key]
+    if valid:
+        return target
+    named_area = mentioned_area(text, {item.area for item in candidates if item.area})
+    if not named_area or target.area != named_area:
+        return None
+    best = max((item for item in (first, second) if isinstance(item, dict)),
+               key=lambda item: item.get("confidence", 0))
+    if target.kind == "light_group" and second is not None:
+        return target if _soft_choice(best, 0.65, 0.9) == key else None
+    if target.kind == "light_entity" and is_specific_light_request(text, [target], named_area, language):
+        return target if _soft_choice(best, 0.75, 0.9) == key else None
+    return None
 
 
 def detail_request(text: str, domain: str, language: str | None = None) -> dict | None:

@@ -19,7 +19,8 @@ for name in ("const", "routing"):
 
 from laya_assistant.routing import (  # noqa: E402
     Target, best_action, choice, domain_request, explicit_action,
-    light_group_label, mentioned_area, target_candidates, valid_target,
+    light_group_label, mentioned_area, selected_domain, selected_target,
+    target_candidates, valid_target,
 )
 from laya_assistant.locale import LOCALES, get_locale  # noqa: E402
 from laya_assistant.aliases import parse_spoken_names  # noqa: E402
@@ -55,7 +56,7 @@ class RoutingTests(unittest.TestCase):
         generic = target_candidates("включи свет в детской", "on_off", self.targets, "Детская")
         self.assertEqual({target.key for target in generic}, {"g0", "g1"})
         specific = target_candidates("включи верхний свет в детской", "on_off", self.targets, "Детская")
-        self.assertEqual({target.key for target in specific}, {"e0", "e1"})
+        self.assertEqual({target.key for target in specific}, {"g0", "e0", "e1"})
         self.assertFalse(valid_target(self.targets[4], "включи свет в детской", "Детская", self.targets))
 
     def test_action_is_model_choice_with_text_veto(self):
@@ -66,6 +67,19 @@ class RoutingTests(unittest.TestCase):
                                        "action_check": answer("turn_off", 0.70)},
                                       "выключи свет"))
         self.assertEqual(explicit_action("свет в детской включи"), "turn_on")
+
+    def test_soft_gates_need_explicit_text_anchors(self):
+        self.assertEqual(selected_domain(answer("on_off", 0.70, 0.90),
+                                         "зажги свет в детской", "ru"), "on_off")
+        self.assertIsNone(selected_domain(answer("on_off", 0.70, 0.90),
+                                          "свет в детской", "ru"))
+        candidate = self.targets[3]
+        answers = {"target": answer("g0", 0.69, 0.91),
+                   "target_check": answer("g0", 0.46, 0.78)}
+        self.assertEqual(selected_target(answers, "включи освещение в детской",
+                                         [candidate, self.targets[4]], "ru"), candidate)
+        self.assertIsNone(selected_target(answers, "включи освещение",
+                                          [candidate, self.targets[4]], "ru"))
 
     def test_domain_has_no_entity_id(self):
         request = domain_request("включи свет в детской")

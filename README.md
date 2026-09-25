@@ -63,9 +63,14 @@ make the first start slower than later starts. The add-on supports `amd64` and
 
 - Control and read targets are chosen from the explicit allowlist in the config
   flow. Names and areas are read from HA's live registries for each request.
-- Both model confidence and selected probability must be at least 0.80.
-  Unavailable entities, unlisted targets, ambiguous rooms, and contradictory
-  action words are rejected before a service call.
+- The normal gate requires model confidence and selected probability of at
+  least 0.80. For an explicit light command, a hesitant domain choice can pass
+  at 0.60/0.80. A room-light target can pass at 0.65/0.90 only when two Laya
+  target questions agree and the spoken room matches the approved HA area; a
+  named fixture can pass at 0.75/0.90 only when its name and area match the
+  request. The action still requires 0.80/0.80. Unavailable entities, unlisted
+  targets, ambiguous rooms, and contradictory action words are rejected before
+  a service call.
 - Control and read permissions are checked against the HA user in the request
   context. Requests without an HA user ID cannot control or read entities.
 - An area-light group contains only entities selected in **Lights**. Whole-home
@@ -86,6 +91,12 @@ make the first start slower than later starts. The add-on supports `amd64` and
 The entity exposes `domain_ms`, `target_ms`, `detail_ms`, `api_ms`, and
 `total_ms` attributes to help diagnose latency. A stage skipped after an early
 rejection has no timing attribute.
+
+In a no-service-call check using a sample two-room catalog, 19 of 20 Russian
+children's-room phrases produced the expected target and action. One request
+(`погаси свет в детской`) was rejected at the action gate. One sample command
+per supported language also reached the expected target and action. These are
+smoke checks, not a measured accuracy benchmark or a physical light test.
 
 ## Development
 

@@ -20,8 +20,8 @@ from .const import (
 )
 from .locale import DONE_ACTIONS, get_locale
 from .routing import (
-    Target, best_action, choice, detail_request, domain_request,
-    target_candidates, target_request, valid_target,
+    best_action, detail_request, domain_request,
+    selected_domain, selected_target, target_candidates, target_request, valid_target,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -98,7 +98,7 @@ class LayaConversation(conversation.ConversationEntity):
                 return answers
 
             first = await ask(domain_request(text, language), "domain_ms")
-            domain = choice(first.get("domain"))
+            domain = selected_domain(first.get("domain"), text, language)
             if domain not in {"on_off", "temperature", "time"}:
                 self.metrics["status"] = "clarification"
                 return finish(locale.replies[0])
@@ -112,8 +112,7 @@ class LayaConversation(conversation.ConversationEntity):
                     return finish(locale.replies[0])
                 request = target_request(text, domain, candidates, area, language)
                 second = await ask(request, "target_ms")
-                target_key = choice(second.get("target"))
-                target = next((item for item in candidates if item.key == target_key), None)
+                target = selected_target(second, text, candidates, language)
                 if target is None or not valid_target(target, text, area, targets, language):
                     self.metrics["status"] = "clarification"
                     return finish(locale.replies[0])
