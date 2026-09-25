@@ -1,0 +1,21 @@
+name: Laya Server
+slug: laya
+description: Local Laya decision server for Laya Assistant
+version: 0.1.0
+url: https://github.com/ps1x/LayaAssitant
+arch:
+  - amd64
+  - aarch64
+startup: application
+boot: auto
+init: false
+ports:
+  8000/tcp: 8000
+ports_description:
+  8000/tcp: Local Laya HTTP API
+options:
+  threads: 4
+  api_key: ""
+schema:
+  threads: int(1,32)
+  api_key: str?

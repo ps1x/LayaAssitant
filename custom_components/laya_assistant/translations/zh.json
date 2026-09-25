@@ -1,0 +1,51 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "连接 Laya",
+        "description": "输入 Home Assistant 可访问的 Laya 地址。请先安装 Laya 服务器。",
+        "data": {
+          "url": "Laya 服务器地址",
+          "api_key": "API 密钥（可选）"
+        }
+      },
+      "entities": {
+        "title": "允许的实体",
+        "description": "助手只能控制或读取选定的实体。照明开关放在灯光，其他开关放在开关。",
+        "data": {
+          "lights": "灯和照明开关",
+          "switches": "其他开关",
+          "fans": "风扇",
+          "climates": "空调设备（开/关）",
+          "temperature_sensors": "温度传感器或空调设备",
+          "satellite_device_id": "默认语音设备（可选）",
+          "spoken_names": "口语名称（JSON，可选）"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "无法连接到兼容的 Laya 服务器。",
+      "invalid_url": "只输入服务器地址，例如 http://host:8000。",
+      "select_entities": "至少选择一个实体，且不要在两个控制组中重复选择。"
+    },
+    "abort": {
+      "already_configured": "此 Laya 服务器已配置。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "允许的实体",
+        "data": {
+          "lights": "灯和照明开关",
+          "switches": "其他开关",
+          "fans": "风扇",
+          "climates": "空调设备（开/关）",
+          "temperature_sensors": "温度传感器或空调设备",
+          "satellite_device_id": "默认语音设备（可选）",
+          "spoken_names": "口语名称（JSON，可选）"
+        }
+      }
+    }
+  }
+}

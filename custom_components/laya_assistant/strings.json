@@ -1,0 +1,51 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Laya",
+        "description": "Enter the URL reachable from Home Assistant. Install the companion Laya server first.",
+        "data": {
+          "url": "Laya server URL",
+          "api_key": "API key (optional)"
+        }
+      },
+      "entities": {
+        "title": "Allowed entities",
+        "description": "Only selected entities can be controlled or read by Laya Assistant. Put lighting switches in Lights, and other switches in Switches.",
+        "data": {
+          "lights": "Lights and lighting switches",
+          "switches": "Other switches",
+          "fans": "Fans",
+          "climates": "Climate devices (on/off)",
+          "temperature_sensors": "Temperature sensors or climate devices",
+          "satellite_device_id": "Default voice satellite (optional)",
+          "spoken_names": "Spoken names (JSON, optional)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot reach a compatible Laya server.",
+      "invalid_url": "Enter only the server URL, for example http://host:8000.",
+      "select_entities": "Select at least one entity and do not place it in two control groups."
+    },
+    "abort": {
+      "already_configured": "This Laya server is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Allowed entities",
+        "data": {
+          "lights": "Lights and lighting switches",
+          "switches": "Other switches",
+          "fans": "Fans",
+          "climates": "Climate devices (on/off)",
+          "temperature_sensors": "Temperature sensors or climate devices",
+          "satellite_device_id": "Default voice satellite (optional)",
+          "spoken_names": "Spoken names (JSON, optional)"
+        }
+      }
+    }
+  }
+}

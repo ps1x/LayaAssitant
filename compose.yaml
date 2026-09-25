@@ -1,0 +1,17 @@
+services:
+  laya:
+    build: ./addon/laya
+    restart: unless-stopped
+    environment:
+      HF_HOME: /data/huggingface
+      LAYA_HOST: 0.0.0.0
+      LAYA_PORT: "8000"
+      LAYA_DEVICE: cpu
+      LAYA_MODELS: multilingual
+      LAYA_PRELOAD: "1"
+      LAYA_THREADS: "4"
+      LAYA_API_KEY: "${LAYA_API_KEY:-}"
+    volumes:
+      - ./laya-data:/data:Z
+    ports:
+      - "127.0.0.1:8000:8000"

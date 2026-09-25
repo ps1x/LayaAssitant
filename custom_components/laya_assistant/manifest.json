@@ -1,0 +1,13 @@
+{
+  "domain": "laya_assistant",
+  "name": "Laya Assistant",
+  "version": "0.1.0",
+  "documentation": "https://github.com/ps1x/LayaAssitant",
+  "issue_tracker": "https://github.com/ps1x/LayaAssitant/issues",
+  "codeowners": ["@ps1x"],
+  "config_flow": true,
+  "dependencies": ["conversation"],
+  "iot_class": "local_push",
+  "integration_type": "service",
+  "requirements": []
+}

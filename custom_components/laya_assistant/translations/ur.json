@@ -1,0 +1,51 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Laya سے رابطہ",
+        "description": "وہ Laya پتہ درج کریں جس تک Home Assistant پہنچ سکے۔ پہلے Laya سرور نصب کریں۔",
+        "data": {
+          "url": "Laya سرور URL",
+          "api_key": "API کلید (اختیاری)"
+        }
+      },
+      "entities": {
+        "title": "اجازت یافتہ ادارے",
+        "description": "معاون صرف منتخب اداروں کو کنٹرول یا پڑھ سکتا ہے۔ روشنی کے سوئچ لائٹس میں رکھیں۔",
+        "data": {
+          "lights": "لائٹس اور روشنی کے سوئچ",
+          "switches": "دوسرے سوئچ",
+          "fans": "پنکھے",
+          "climates": "ماحولیاتی آلات (آن/آف)",
+          "temperature_sensors": "درجہ حرارت سینسر یا ماحولیاتی آلات",
+          "satellite_device_id": "ڈیفالٹ صوتی سیٹلائٹ (اختیاری)",
+          "spoken_names": "بولے جانے والے نام (JSON، اختیاری)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "موزوں Laya سرور سے رابطہ نہیں ہو سکا۔",
+      "invalid_url": "صرف سرور URL درج کریں، مثلاً http://host:8000۔",
+      "select_entities": "کم از کم ایک ادارہ چنیں اور دو کنٹرول گروہوں میں نہ رکھیں۔"
+    },
+    "abort": {
+      "already_configured": "یہ Laya سرور پہلے سے ترتیب دیا گیا ہے۔"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "اجازت یافتہ ادارے",
+        "data": {
+          "lights": "لائٹس اور روشنی کے سوئچ",
+          "switches": "دوسرے سوئچ",
+          "fans": "پنکھے",
+          "climates": "ماحولیاتی آلات (آن/آف)",
+          "temperature_sensors": "درجہ حرارت سینسر یا ماحولیاتی آلات",
+          "satellite_device_id": "ڈیفالٹ صوتی سیٹلائٹ (اختیاری)",
+          "spoken_names": "بولے جانے والے نام (JSON، اختیاری)"
+        }
+      }
+    }
+  }
+}

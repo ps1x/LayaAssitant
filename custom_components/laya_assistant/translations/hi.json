@@ -1,0 +1,51 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Laya से जुड़ें",
+        "description": "Home Assistant से पहुँच योग्य Laya पता दें। पहले Laya सर्वर स्थापित करें।",
+        "data": {
+          "url": "Laya सर्वर URL",
+          "api_key": "API कुंजी (वैकल्पिक)"
+        }
+      },
+      "entities": {
+        "title": "अनुमत इकाइयाँ",
+        "description": "सहायक केवल चयनित इकाइयों को नियंत्रित या पढ़ सकता है। प्रकाश के स्विच लाइट में रखें।",
+        "data": {
+          "lights": "लाइट और प्रकाश स्विच",
+          "switches": "अन्य स्विच",
+          "fans": "पंखे",
+          "climates": "जलवायु उपकरण (चालू/बंद)",
+          "temperature_sensors": "तापमान सेंसर या जलवायु उपकरण",
+          "satellite_device_id": "डिफ़ॉल्ट वॉइस उपग्रह (वैकल्पिक)",
+          "spoken_names": "बोले जाने वाले नाम (JSON, वैकल्पिक)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "संगत Laya सर्वर से कनेक्ट नहीं हो सका।",
+      "invalid_url": "केवल सर्वर URL दें, जैसे http://host:8000।",
+      "select_entities": "कम से कम एक इकाई चुनें और उसे दो नियंत्रण समूहों में न रखें।"
+    },
+    "abort": {
+      "already_configured": "यह Laya सर्वर पहले से कॉन्फ़िगर है।"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "अनुमत इकाइयाँ",
+        "data": {
+          "lights": "लाइट और प्रकाश स्विच",
+          "switches": "अन्य स्विच",
+          "fans": "पंखे",
+          "climates": "जलवायु उपकरण (चालू/बंद)",
+          "temperature_sensors": "तापमान सेंसर या जलवायु उपकरण",
+          "satellite_device_id": "डिफ़ॉल्ट वॉइस उपग्रह (वैकल्पिक)",
+          "spoken_names": "बोले जाने वाले नाम (JSON, वैकल्पिक)"
+        }
+      }
+    }
+  }
+}

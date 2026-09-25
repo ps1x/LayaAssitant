@@ -1,0 +1,51 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Conectar con Laya",
+        "description": "Introduce una dirección de Laya accesible desde Home Assistant. Instala primero el servidor Laya.",
+        "data": {
+          "url": "URL del servidor Laya",
+          "api_key": "Clave API (opcional)"
+        }
+      },
+      "entities": {
+        "title": "Entidades permitidas",
+        "description": "El asistente solo puede controlar o leer las entidades seleccionadas. Pon los interruptores de iluminación en Luces.",
+        "data": {
+          "lights": "Luces e interruptores de iluminación",
+          "switches": "Otros interruptores",
+          "fans": "Ventiladores",
+          "climates": "Climatización (encender/apagar)",
+          "temperature_sensors": "Sensores de temperatura o climatización",
+          "satellite_device_id": "Satélite de voz predeterminado (opcional)",
+          "spoken_names": "Nombres hablados (JSON, opcional)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "No se puede conectar a un servidor Laya compatible.",
+      "invalid_url": "Introduce solo la URL del servidor, por ejemplo http://host:8000.",
+      "select_entities": "Selecciona al menos una entidad y no la incluyas en dos grupos de control."
+    },
+    "abort": {
+      "already_configured": "Este servidor Laya ya está configurado."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Entidades permitidas",
+        "data": {
+          "lights": "Luces e interruptores de iluminación",
+          "switches": "Otros interruptores",
+          "fans": "Ventiladores",
+          "climates": "Climatización (encender/apagar)",
+          "temperature_sensors": "Sensores de temperatura o climatización",
+          "satellite_device_id": "Satélite de voz predeterminado (opcional)",
+          "spoken_names": "Nombres hablados (JSON, opcional)"
+        }
+      }
+    }
+  }
+}

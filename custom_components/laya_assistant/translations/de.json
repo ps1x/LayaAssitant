@@ -1,0 +1,51 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Mit Laya verbinden",
+        "description": "Gib eine Laya-Adresse ein, die Home Assistant erreichen kann. Installiere zuerst den Laya-Server.",
+        "data": {
+          "url": "Laya-Server-URL",
+          "api_key": "API-Schlüssel (optional)"
+        }
+      },
+      "entities": {
+        "title": "Erlaubte Entitäten",
+        "description": "Der Assistent darf nur ausgewählte Entitäten steuern oder lesen. Lichtschalter gehören zu Lichter.",
+        "data": {
+          "lights": "Lichter und Lichtschalter",
+          "switches": "Andere Schalter",
+          "fans": "Ventilatoren",
+          "climates": "Klimageräte (ein/aus)",
+          "temperature_sensors": "Temperatursensoren oder Klimageräte",
+          "satellite_device_id": "Standard-Sprachsatellit (optional)",
+          "spoken_names": "Gesprochene Namen (JSON, optional)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Keine Verbindung zu einem kompatiblen Laya-Server.",
+      "invalid_url": "Gib nur die Server-URL ein, etwa http://host:8000.",
+      "select_entities": "Wähle mindestens eine Entität und ordne sie nicht zwei Steuergruppen zu."
+    },
+    "abort": {
+      "already_configured": "Dieser Laya-Server ist bereits eingerichtet."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Erlaubte Entitäten",
+        "data": {
+          "lights": "Lichter und Lichtschalter",
+          "switches": "Andere Schalter",
+          "fans": "Ventilatoren",
+          "climates": "Klimageräte (ein/aus)",
+          "temperature_sensors": "Temperatursensoren oder Klimageräte",
+          "satellite_device_id": "Standard-Sprachsatellit (optional)",
+          "spoken_names": "Gesprochene Namen (JSON, optional)"
+        }
+      }
+    }
+  }
+}

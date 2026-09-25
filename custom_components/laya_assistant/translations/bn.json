@@ -1,0 +1,51 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Laya-তে সংযোগ করুন",
+        "description": "Home Assistant থেকে পৌঁছানো যায় এমন Laya ঠিকানা লিখুন। আগে Laya সার্ভার ইনস্টল করুন।",
+        "data": {
+          "url": "Laya সার্ভারের URL",
+          "api_key": "API কী (ঐচ্ছিক)"
+        }
+      },
+      "entities": {
+        "title": "অনুমোদিত সত্তা",
+        "description": "সহকারী শুধু নির্বাচিত সত্তা নিয়ন্ত্রণ বা পড়তে পারে। আলোর সুইচ Lights-এ রাখুন।",
+        "data": {
+          "lights": "আলো ও আলোর সুইচ",
+          "switches": "অন্যান্য সুইচ",
+          "fans": "পাখা",
+          "climates": "জলবায়ু যন্ত্র (চালু/বন্ধ)",
+          "temperature_sensors": "তাপমাত্রা সেন্সর বা জলবায়ু যন্ত্র",
+          "satellite_device_id": "ডিফল্ট ভয়েস স্যাটেলাইট (ঐচ্ছিক)",
+          "spoken_names": "কথ্য নাম (JSON, ঐচ্ছিক)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "সামঞ্জস্যপূর্ণ Laya সার্ভারে সংযোগ করা যায়নি।",
+      "invalid_url": "শুধু সার্ভারের URL লিখুন, যেমন http://host:8000।",
+      "select_entities": "অন্তত একটি সত্তা বাছুন এবং দুটি নিয়ন্ত্রণ দলে রাখবেন না।"
+    },
+    "abort": {
+      "already_configured": "এই Laya সার্ভার আগেই কনফিগার করা আছে।"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "অনুমোদিত সত্তা",
+        "data": {
+          "lights": "আলো ও আলোর সুইচ",
+          "switches": "অন্যান্য সুইচ",
+          "fans": "পাখা",
+          "climates": "জলবায়ু যন্ত্র (চালু/বন্ধ)",
+          "temperature_sensors": "তাপমাত্রা সেন্সর বা জলবায়ু যন্ত্র",
+          "satellite_device_id": "ডিফল্ট ভয়েস স্যাটেলাইট (ঐচ্ছিক)",
+          "spoken_names": "কথ্য নাম (JSON, ঐচ্ছিক)"
+        }
+      }
+    }
+  }
+}

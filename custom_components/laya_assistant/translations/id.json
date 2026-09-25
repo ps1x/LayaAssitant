@@ -1,0 +1,51 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Hubungkan ke Laya",
+        "description": "Masukkan alamat Laya yang dapat diakses Home Assistant. Pasang server Laya terlebih dahulu.",
+        "data": {
+          "url": "URL server Laya",
+          "api_key": "Kunci API (opsional)"
+        }
+      },
+      "entities": {
+        "title": "Entitas yang diizinkan",
+        "description": "Asisten hanya dapat mengendalikan atau membaca entitas terpilih. Masukkan sakelar lampu ke Lampu.",
+        "data": {
+          "lights": "Lampu dan sakelar lampu",
+          "switches": "Sakelar lain",
+          "fans": "Kipas",
+          "climates": "Perangkat iklim (nyala/mati)",
+          "temperature_sensors": "Sensor suhu atau perangkat iklim",
+          "satellite_device_id": "Satelit suara bawaan (opsional)",
+          "spoken_names": "Nama lisan (JSON, opsional)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Tidak dapat terhubung ke server Laya yang kompatibel.",
+      "invalid_url": "Masukkan hanya URL server, misalnya http://host:8000.",
+      "select_entities": "Pilih setidaknya satu entitas dan jangan taruh di dua grup kendali."
+    },
+    "abort": {
+      "already_configured": "Server Laya ini sudah dikonfigurasi."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Entitas yang diizinkan",
+        "data": {
+          "lights": "Lampu dan sakelar lampu",
+          "switches": "Sakelar lain",
+          "fans": "Kipas",
+          "climates": "Perangkat iklim (nyala/mati)",
+          "temperature_sensors": "Sensor suhu atau perangkat iklim",
+          "satellite_device_id": "Satelit suara bawaan (opsional)",
+          "spoken_names": "Nama lisan (JSON, opsional)"
+        }
+      }
+    }
+  }
+}
