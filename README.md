@@ -30,6 +30,14 @@ If HA uses another language, assistant prompts and replies fall back to
 English. The integration includes matching UI translations; the STT and TTS
 engines selected in an Assist pipeline must also support that language.
 
+Laya is the default local decision provider. **Jev** is an optional cloud
+provider using the same System One choice API. Add a second Laya Assistant
+integration entry, choose **Jev**, enter `https://api.typesafe.ai` and a
+TypeSafe API key, then choose **Laya Assistant (Jev)** in a separate Assist
+pipeline. It uses `jev-latest` and sends the recognized request and approved
+target descriptions to TypeSafe. The existing Laya entry and pipeline remain
+local and available. Jev needs Internet access and an API key.
+
 ## Install
 
 The Home Assistant integration and the Laya model server are separate parts.
@@ -47,7 +55,8 @@ compatible Laya server. HACS cannot start containers on the HA host.
 3. In HACS, add the same URL as a custom **Integration** repository and install
    **Laya Assistant**. Restart Home Assistant.
 4. In **Settings → Devices & services → Add integration**, choose **Laya
-   Assistant**. Enter `http://<HA-host-address>:8000` and the matching API key.
+   Assistant**. Choose **Laya** and enter `http://<HA-host-address>:8000` and
+   the matching API key.
    Select the exact entities Laya Assistant may control or read.
 5. In **Settings → Voice assistants**, create or edit an Assist pipeline and
    choose **Laya Assistant** as its conversation agent. Select any STT and TTS

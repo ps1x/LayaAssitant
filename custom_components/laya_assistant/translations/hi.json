@@ -3,10 +3,11 @@
     "step": {
       "user": {
         "title": "Laya से जुड़ें",
-        "description": "Home Assistant से पहुँच योग्य Laya पता दें। पहले Laya सर्वर स्थापित करें।",
+        "description": "स्थानीय Laya या क्लाउड Jev चुनें, फिर URL और आवश्यक API कुंजी दें।",
         "data": {
-          "url": "Laya सर्वर URL",
-          "api_key": "API कुंजी (वैकल्पिक)"
+          "url": "निर्णय सर्वर URL",
+          "api_key": "API कुंजी (वैकल्पिक)",
+          "provider": "निर्णय प्रदाता (स्थानीय Laya या क्लाउड Jev)"
         }
       },
       "entities": {
@@ -33,9 +34,10 @@
       }
     },
     "error": {
-      "cannot_connect": "संगत Laya सर्वर से कनेक्ट नहीं हो सका।",
+      "cannot_connect": "चयनित निर्णय सर्वर से संपर्क नहीं हो सका।",
       "invalid_url": "केवल सर्वर URL दें, जैसे http://host:8000।",
-      "select_entities": "कम से कम एक इकाई चुनें और उसे दो नियंत्रण समूहों में न रखें।"
+      "select_entities": "कम से कम एक इकाई चुनें और उसे दो नियंत्रण समूहों में न रखें।",
+      "api_key_required": "Jev के लिए TypeSafe API कुंजी आवश्यक है।"
     },
     "abort": {
       "already_configured": "यह Laya सर्वर पहले से कॉन्फ़िगर है।"

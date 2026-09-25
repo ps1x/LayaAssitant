@@ -9,9 +9,10 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .client import LayaClient, LayaConnectionError, normalize_url
 from .aliases import parse_area_overrides, parse_spoken_names
 from .const import (
-    CONF_API_KEY, CONF_CLIMATES, CONF_DEBUG, CONF_FANS, CONF_LIGHTS, CONF_SATELLITE,
+    CONF_API_KEY, CONF_CLIMATES, CONF_DEBUG, CONF_FANS, CONF_LIGHTS, CONF_PROVIDER,
+    CONF_SATELLITE,
     CONF_SPOKEN_NAMES, CONF_SWITCHES, CONF_TEMPERATURE, CONF_URL, DOMAIN, ENTITY_FIELDS,
-    THRESHOLD_DEFAULTS,
+    PROVIDER_JEV, PROVIDER_LAYA, THRESHOLD_DEFAULTS,
 )
 from .routing import Thresholds
 
@@ -82,21 +83,32 @@ class LayaAssistantFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(self, user_input=None):
         errors = {}
         if user_input is not None:
+            provider = user_input.get(CONF_PROVIDER, PROVIDER_LAYA)
             try:
+                if provider not in {PROVIDER_LAYA, PROVIDER_JEV}:
+                    raise ValueError("Invalid provider")
+                if provider == PROVIDER_JEV and not user_input.get(CONF_API_KEY):
+                    errors["base"] = "api_key_required"
+                    raise ValueError("Missing Jev API key")
                 url = normalize_url(user_input[CONF_URL])
-                await LayaClient(async_get_clientsession(self.hass), url, user_input.get(CONF_API_KEY, "")).check()
+                await LayaClient(async_get_clientsession(self.hass), url,
+                                 user_input.get(CONF_API_KEY, ""), provider).check()
             except ValueError:
-                errors["base"] = "invalid_url"
+                errors.setdefault("base", "invalid_url")
             except LayaConnectionError:
                 errors["base"] = "cannot_connect"
             else:
-                await self.async_set_unique_id(url)
+                await self.async_set_unique_id(url if provider == PROVIDER_LAYA else f"jev:{url}")
                 self._abort_if_unique_id_configured()
-                self._connection = {CONF_URL: url, CONF_API_KEY: user_input.get(CONF_API_KEY, "")}
+                self._connection = {CONF_PROVIDER: provider, CONF_URL: url,
+                                    CONF_API_KEY: user_input.get(CONF_API_KEY, "")}
                 return await self.async_step_entities()
         return self.async_show_form(
             step_id="user", errors=errors,
             data_schema=vol.Schema({
+                vol.Required(CONF_PROVIDER, default=PROVIDER_LAYA): selector.SelectSelector(
+                    selector.SelectSelectorConfig(options=[PROVIDER_LAYA, PROVIDER_JEV])
+                ),
                 vol.Required(CONF_URL): selector.TextSelector(selector.TextSelectorConfig(type=selector.TextSelectorType.URL)),
                 vol.Optional(CONF_API_KEY, default=""): selector.TextSelector(selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)),
             }),
@@ -108,7 +120,9 @@ class LayaAssistantFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if not _valid_entities(user_input):
                 errors["base"] = "select_entities"
             else:
-                return self.async_create_entry(title="Laya Assistant", data={**self._connection, **user_input})
+                provider = self._connection[CONF_PROVIDER]
+                title = "Laya Assistant (Jev)" if provider == PROVIDER_JEV else "Laya Assistant"
+                return self.async_create_entry(title=title, data={**self._connection, **user_input})
         return self.async_show_form(step_id="entities", data_schema=_entities_schema(), errors=errors)
 
 

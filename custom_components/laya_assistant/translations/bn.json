@@ -3,10 +3,11 @@
     "step": {
       "user": {
         "title": "Laya-তে সংযোগ করুন",
-        "description": "Home Assistant থেকে পৌঁছানো যায় এমন Laya ঠিকানা লিখুন। আগে Laya সার্ভার ইনস্টল করুন।",
+        "description": "স্থানীয় Laya বা ক্লাউড Jev বেছে নিয়ে URL এবং প্রয়োজনীয় API কী দিন।",
         "data": {
-          "url": "Laya সার্ভারের URL",
-          "api_key": "API কী (ঐচ্ছিক)"
+          "url": "সিদ্ধান্ত সার্ভারের URL",
+          "api_key": "API কী (ঐচ্ছিক)",
+          "provider": "সিদ্ধান্ত প্রদানকারী (স্থানীয় Laya বা ক্লাউড Jev)"
         }
       },
       "entities": {
@@ -33,9 +34,10 @@
       }
     },
     "error": {
-      "cannot_connect": "সামঞ্জস্যপূর্ণ Laya সার্ভারে সংযোগ করা যায়নি।",
+      "cannot_connect": "নির্বাচিত সিদ্ধান্ত সার্ভারে সংযোগ করা যায়নি।",
       "invalid_url": "শুধু সার্ভারের URL লিখুন, যেমন http://host:8000।",
-      "select_entities": "অন্তত একটি সত্তা বাছুন এবং দুটি নিয়ন্ত্রণ দলে রাখবেন না।"
+      "select_entities": "অন্তত একটি সত্তা বাছুন এবং দুটি নিয়ন্ত্রণ দলে রাখবেন না।",
+      "api_key_required": "Jev-এর জন্য TypeSafe API কী প্রয়োজন।"
     },
     "abort": {
       "already_configured": "এই Laya সার্ভার আগেই কনফিগার করা আছে।"

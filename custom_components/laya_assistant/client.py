@@ -4,6 +4,8 @@ from urllib.parse import urlsplit
 
 import aiohttp
 
+from .const import PROVIDER_JEV, PROVIDER_LAYA
+
 
 class LayaConnectionError(Exception):
     """The configured Laya server is unreachable or incompatible."""
@@ -20,24 +22,33 @@ def normalize_url(value: str) -> str:
 
 
 class LayaClient:
-    def __init__(self, session: aiohttp.ClientSession, url: str, api_key: str = "") -> None:
+    def __init__(self, session: aiohttp.ClientSession, url: str, api_key: str = "",
+                 provider: str = PROVIDER_LAYA) -> None:
+        if provider not in {PROVIDER_LAYA, PROVIDER_JEV}:
+            raise ValueError("Unknown decision provider")
+        if provider == PROVIDER_JEV and not api_key:
+            raise ValueError("Jev requires an API key")
         self.session = session
         self.url = normalize_url(url)
+        self.provider = provider
         self.headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
+        if provider == PROVIDER_JEV:
+            self.headers["Connection"] = "close"
 
     async def check(self) -> None:
-        try:
-            async with self.session.get(
-                self.url + "/health", headers=self.headers,
-                timeout=aiohttp.ClientTimeout(total=10), allow_redirects=False,
-            ) as response:
-                body = await response.json()
-                if response.status != 200 or not isinstance(body, dict) or body.get("status") != "ok":
-                    raise LayaConnectionError("Laya health endpoint did not return status ok")
-        except (aiohttp.ClientError, TimeoutError, ValueError) as exc:
-            raise LayaConnectionError("Cannot reach a compatible Laya server") from exc
+        if self.provider == PROVIDER_LAYA:
+            try:
+                async with self.session.get(
+                    self.url + "/health", headers=self.headers,
+                    timeout=aiohttp.ClientTimeout(total=10), allow_redirects=False,
+                ) as response:
+                    body = await response.json()
+                    if response.status != 200 or not isinstance(body, dict) or body.get("status") != "ok":
+                        raise LayaConnectionError("Laya health endpoint did not return status ok")
+            except (aiohttp.ClientError, TimeoutError, ValueError) as exc:
+                raise LayaConnectionError("Cannot reach a compatible Laya server") from exc
         answers = await self.ask({
-            "model": "multilingual",
+            "model": "jev-latest" if self.provider == PROVIDER_JEV else "multilingual",
             "state": {"request": "connection test"},
             "questions": {"probe": {"type": "choice", "instructions": "Is this a connection test?",
                                     "criteria": {"yes": "a test", "no": "something else"}}},
@@ -47,9 +58,12 @@ class LayaClient:
 
     async def ask(self, request: dict) -> dict:
         try:
+            if self.provider == PROVIDER_JEV:
+                request = {**request, "model": "jev-latest"}
             async with self.session.post(
                 self.url + "/v1/systemone", json=request, headers=self.headers,
-                timeout=aiohttp.ClientTimeout(total=30), allow_redirects=False,
+                timeout=aiohttp.ClientTimeout(total=8 if self.provider == PROVIDER_JEV else 30),
+                allow_redirects=False,
             ) as response:
                 if response.status != 200:
                     raise LayaConnectionError(f"Laya returned HTTP {response.status}")

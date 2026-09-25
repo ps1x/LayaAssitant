@@ -3,10 +3,11 @@
     "step": {
       "user": {
         "title": "Laya سے رابطہ",
-        "description": "وہ Laya پتہ درج کریں جس تک Home Assistant پہنچ سکے۔ پہلے Laya سرور نصب کریں۔",
+        "description": "مقامی Laya یا کلاؤڈ Jev منتخب کریں، پھر URL اور ضرورت کے مطابق API کلید درج کریں۔",
         "data": {
-          "url": "Laya سرور URL",
-          "api_key": "API کلید (اختیاری)"
+          "url": "فیصلہ سرور کا URL",
+          "api_key": "API کلید (اختیاری)",
+          "provider": "فیصلہ فراہم کنندہ (مقامی Laya یا کلاؤڈ Jev)"
         }
       },
       "entities": {
@@ -33,9 +34,10 @@
       }
     },
     "error": {
-      "cannot_connect": "موزوں Laya سرور سے رابطہ نہیں ہو سکا۔",
+      "cannot_connect": "منتخب فیصلہ سرور سے رابطہ نہیں ہو سکا۔",
       "invalid_url": "صرف سرور URL درج کریں، مثلاً http://host:8000۔",
-      "select_entities": "کم از کم ایک ادارہ چنیں اور دو کنٹرول گروہوں میں نہ رکھیں۔"
+      "select_entities": "کم از کم ایک ادارہ چنیں اور دو کنٹرول گروہوں میں نہ رکھیں۔",
+      "api_key_required": "Jev کے لیے TypeSafe API کلید ضروری ہے۔"
     },
     "abort": {
       "already_configured": "یہ Laya سرور پہلے سے ترتیب دیا گیا ہے۔"

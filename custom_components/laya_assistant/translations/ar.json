@@ -3,10 +3,11 @@
     "step": {
       "user": {
         "title": "الاتصال بـ Laya",
-        "description": "أدخل عنوان Laya الذي يستطيع Home Assistant الوصول إليه. ثبّت خادم Laya أولاً.",
+        "description": "اختر Laya المحلي أو Jev السحابي، ثم أدخل العنوان ومفتاح API عند الحاجة.",
         "data": {
-          "url": "عنوان خادم Laya",
-          "api_key": "مفتاح API (اختياري)"
+          "url": "عنوان خادم القرار",
+          "api_key": "مفتاح API (اختياري)",
+          "provider": "مزود القرار (Laya محلي أو Jev سحابي)"
         }
       },
       "entities": {
@@ -33,9 +34,10 @@
       }
     },
     "error": {
-      "cannot_connect": "تعذر الاتصال بخادم Laya متوافق.",
+      "cannot_connect": "تعذر الوصول إلى خادم القرار المحدد.",
       "invalid_url": "أدخل عنوان الخادم فقط، مثل http://host:8000.",
-      "select_entities": "اختر كياناً واحداً على الأقل ولا تضعه في مجموعتي تحكم."
+      "select_entities": "اختر كياناً واحداً على الأقل ولا تضعه في مجموعتي تحكم.",
+      "api_key_required": "يتطلب Jev مفتاح API من TypeSafe."
     },
     "abort": {
       "already_configured": "خادم Laya هذا مهيأ بالفعل."

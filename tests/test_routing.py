@@ -1,6 +1,7 @@
 """Pure routing checks without importing Home Assistant."""
 
 import importlib.util
+import asyncio
 import json
 from pathlib import Path
 import sys
@@ -24,6 +25,7 @@ from laya_assistant.routing import (  # noqa: E402
 )
 from laya_assistant.locale import LOCALES, get_locale  # noqa: E402
 from laya_assistant.aliases import parse_area_overrides, parse_spoken_names  # noqa: E402
+from laya_assistant.client import LayaClient  # noqa: E402
 from laya_assistant.diagnostics import format_debug, summarize_answers  # noqa: E402
 
 
@@ -191,6 +193,41 @@ class RoutingTests(unittest.TestCase):
         self.assertIn("confidence=0.9100", speech)
         self.assertIn("domain_confidence=0.80", speech)
         self.assertNotIn("Bearer", speech)
+
+    def test_jev_provider_overrides_model_and_uses_key(self):
+        class Response:
+            status = 200
+
+            async def __aenter__(self):
+                return self
+
+            async def __aexit__(self, *_):
+                return None
+
+            async def json(self):
+                return {"answers": {"probe": answer("yes")}}
+
+        class Session:
+            request = None
+
+            def post(self, url, *, json, headers, timeout, allow_redirects):
+                self.request = (url, json, headers, timeout.total, allow_redirects)
+                return Response()
+
+            def get(self, *_args, **_kwargs):
+                raise AssertionError("Jev has no local /health endpoint")
+
+        session = Session()
+        client = LayaClient(session, "https://api.typesafe.ai", "test-key", "jev")
+        request = {"model": "multilingual", "state": {"request": "test"}, "questions": {}}
+        asyncio.run(client.ask(request))
+        self.assertEqual(request["model"], "multilingual")
+        self.assertEqual(session.request[1]["model"], "jev-latest")
+        self.assertEqual(session.request[2]["Connection"], "close")
+        self.assertEqual(session.request[3], 8)
+        asyncio.run(client.check())
+        with self.assertRaises(ValueError):
+            LayaClient(session, "https://api.typesafe.ai", "", "jev")
 
 
 if __name__ == "__main__":

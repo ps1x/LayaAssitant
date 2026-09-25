@@ -3,10 +3,11 @@
     "step": {
       "user": {
         "title": "Connect to Laya",
-        "description": "Enter the URL reachable from Home Assistant. Install the companion Laya server first.",
+        "description": "Select local Laya or cloud Jev, then enter its URL and API key if needed.",
         "data": {
-          "url": "Laya server URL",
-          "api_key": "API key (optional)"
+          "url": "Decision server URL",
+          "api_key": "API key (optional)",
+          "provider": "Decision provider (Laya local or Jev cloud)"
         }
       },
       "entities": {
@@ -33,9 +34,10 @@
       }
     },
     "error": {
-      "cannot_connect": "Cannot reach a compatible Laya server.",
+      "cannot_connect": "Cannot reach the selected decision server.",
       "invalid_url": "Enter only the server URL, for example http://host:8000.",
-      "select_entities": "Select at least one entity and do not place it in two control groups."
+      "select_entities": "Select at least one entity and do not place it in two control groups.",
+      "api_key_required": "Jev requires a TypeSafe API key."
     },
     "abort": {
       "already_configured": "This Laya server is already configured."

@@ -104,6 +104,45 @@ SETTINGS_LABELS = {
            'کم از کم اعتماد', 'منتخب ہونے کا کم از کم امکان', 'جواب میں تشخیصی معلومات اور احتمالات شامل کریں'),
 }
 VARIANTS = {'zh': 'zh-Hans', 'zh-CN': 'zh-Hans', 'pt-BR': 'pt'}
+# Provider label, server URL, missing-key error, setup description, connection error.
+PROVIDER_LABELS = {
+    'en': ('Decision provider (Laya local or Jev cloud)', 'Decision server URL',
+           'Jev requires a TypeSafe API key.', 'Select local Laya or cloud Jev, then enter its URL and API key if needed.',
+           'Cannot reach the selected decision server.'),
+    'ru': ('Провайдер решений (локальная Laya или облачный Jev)', 'Адрес сервера решений',
+           'Для Jev нужен API-ключ TypeSafe.', 'Выберите локальную Laya или облачный Jev, затем укажите адрес и при необходимости API-ключ.',
+           'Не удалось подключиться к выбранному серверу решений.'),
+    'de': ('Entscheidungsanbieter (lokales Laya oder Jev-Cloud)', 'URL des Entscheidungsservers',
+           'Jev benötigt einen TypeSafe-API-Schlüssel.', 'Wähle lokales Laya oder Jev-Cloud und gib URL sowie gegebenenfalls den API-Schlüssel ein.',
+           'Der gewählte Entscheidungsserver ist nicht erreichbar.'),
+    'zh-Hans': ('决策服务（本地 Laya 或云端 Jev）', '决策服务器地址',
+                'Jev 需要 TypeSafe API 密钥。', '选择本地 Laya 或云端 Jev，然后填写地址和所需的 API 密钥。',
+                '无法连接所选决策服务器。'),
+    'hi': ('निर्णय प्रदाता (स्थानीय Laya या क्लाउड Jev)', 'निर्णय सर्वर URL',
+           'Jev के लिए TypeSafe API कुंजी आवश्यक है।', 'स्थानीय Laya या क्लाउड Jev चुनें, फिर URL और आवश्यक API कुंजी दें।',
+           'चयनित निर्णय सर्वर से संपर्क नहीं हो सका।'),
+    'es': ('Proveedor de decisiones (Laya local o Jev en la nube)', 'URL del servidor de decisiones',
+           'Jev requiere una clave API de TypeSafe.', 'Elige Laya local o Jev en la nube e introduce la URL y la clave API si hace falta.',
+           'No se puede conectar al servidor de decisiones elegido.'),
+    'ar': ('مزود القرار (Laya محلي أو Jev سحابي)', 'عنوان خادم القرار',
+           'يتطلب Jev مفتاح API من TypeSafe.', 'اختر Laya المحلي أو Jev السحابي، ثم أدخل العنوان ومفتاح API عند الحاجة.',
+           'تعذر الوصول إلى خادم القرار المحدد.'),
+    'fr': ('Fournisseur de décision (Laya local ou Jev cloud)', 'URL du serveur de décision',
+           'Jev nécessite une clé API TypeSafe.', 'Choisissez Laya local ou Jev cloud, puis saisissez son URL et la clé API si nécessaire.',
+           'Impossible de joindre le serveur de décision choisi.'),
+    'bn': ('সিদ্ধান্ত প্রদানকারী (স্থানীয় Laya বা ক্লাউড Jev)', 'সিদ্ধান্ত সার্ভারের URL',
+           'Jev-এর জন্য TypeSafe API কী প্রয়োজন।', 'স্থানীয় Laya বা ক্লাউড Jev বেছে নিয়ে URL এবং প্রয়োজনীয় API কী দিন।',
+           'নির্বাচিত সিদ্ধান্ত সার্ভারে সংযোগ করা যায়নি।'),
+    'pt': ('Provedor de decisões (Laya local ou Jev na nuvem)', 'URL do servidor de decisões',
+           'Jev exige uma chave API da TypeSafe.', 'Escolha Laya local ou Jev na nuvem e informe a URL e a chave API quando necessária.',
+           'Não foi possível acessar o servidor de decisões escolhido.'),
+    'id': ('Penyedia keputusan (Laya lokal atau Jev cloud)', 'URL server keputusan',
+           'Jev memerlukan kunci API TypeSafe.', 'Pilih Laya lokal atau Jev cloud, lalu masukkan URL dan kunci API jika diperlukan.',
+           'Server keputusan yang dipilih tidak dapat dihubungi.'),
+    'ur': ('فیصلہ فراہم کنندہ (مقامی Laya یا کلاؤڈ Jev)', 'فیصلہ سرور کا URL',
+           'Jev کے لیے TypeSafe API کلید ضروری ہے۔', 'مقامی Laya یا کلاؤڈ Jev منتخب کریں، پھر URL اور ضرورت کے مطابق API کلید درج کریں۔',
+           'منتخب فیصلہ سرور سے رابطہ نہیں ہو سکا۔'),
+}
 for path in root.glob('*.json'):
     code = VARIANTS.get(path.stem, path.stem)
     labels = SETTINGS_LABELS[code]
@@ -121,4 +160,8 @@ for path in root.glob('*.json'):
     data = json.loads(path.read_text())
     data['config']['step']['entities']['data'].update(fields)
     data['options']['step']['init']['data'].update(fields)
+    provider = PROVIDER_LABELS[code]
+    data['config']['step']['user']['data'].update(provider=provider[0], url=provider[1])
+    data['config']['step']['user']['description'] = provider[3]
+    data['config']['error'].update(api_key_required=provider[2], cannot_connect=provider[4])
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')

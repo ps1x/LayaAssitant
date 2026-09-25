@@ -3,10 +3,11 @@
     "step": {
       "user": {
         "title": "Hubungkan ke Laya",
-        "description": "Masukkan alamat Laya yang dapat diakses Home Assistant. Pasang server Laya terlebih dahulu.",
+        "description": "Pilih Laya lokal atau Jev cloud, lalu masukkan URL dan kunci API jika diperlukan.",
         "data": {
-          "url": "URL server Laya",
-          "api_key": "Kunci API (opsional)"
+          "url": "URL server keputusan",
+          "api_key": "Kunci API (opsional)",
+          "provider": "Penyedia keputusan (Laya lokal atau Jev cloud)"
         }
       },
       "entities": {
@@ -33,9 +34,10 @@
       }
     },
     "error": {
-      "cannot_connect": "Tidak dapat terhubung ke server Laya yang kompatibel.",
+      "cannot_connect": "Server keputusan yang dipilih tidak dapat dihubungi.",
       "invalid_url": "Masukkan hanya URL server, misalnya http://host:8000.",
-      "select_entities": "Pilih setidaknya satu entitas dan jangan taruh di dua grup kendali."
+      "select_entities": "Pilih setidaknya satu entitas dan jangan taruh di dua grup kendali.",
+      "api_key_required": "Jev memerlukan kunci API TypeSafe."
     },
     "abort": {
       "already_configured": "Server Laya ini sudah dikonfigurasi."

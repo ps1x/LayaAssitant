@@ -15,8 +15,8 @@ from homeassistant.util import dt as dt_util, ulid
 from .catalog import build_targets, caller_area
 from .client import LayaClient, LayaConnectionError
 from .const import (
-    CONF_API_KEY, CONF_CLIMATES, CONF_DEBUG, CONF_FANS, CONF_LIGHTS, CONF_SATELLITE,
-    CONF_SWITCHES, CONF_URL,
+    CONF_API_KEY, CONF_CLIMATES, CONF_DEBUG, CONF_FANS, CONF_LIGHTS, CONF_PROVIDER,
+    CONF_SATELLITE, CONF_SWITCHES, CONF_URL, PROVIDER_JEV, PROVIDER_LAYA,
 )
 from .diagnostics import format_debug, summarize_answers
 from .locale import DONE_ACTIONS, get_locale
@@ -38,6 +38,8 @@ class LayaConversation(conversation.ConversationEntity):
     def __init__(self, entry):
         self.entry = entry
         self._attr_unique_id = entry.entry_id
+        if entry.data.get(CONF_PROVIDER, PROVIDER_LAYA) == PROVIDER_JEV:
+            self._attr_name = "Laya Assistant (Jev)"
         self.metrics = {}
         self.lock = asyncio.Lock()
 
@@ -98,9 +100,12 @@ class LayaConversation(conversation.ConversationEntity):
             thresholds = Thresholds.from_settings(settings)
             trace["thresholds"] = thresholds.as_dict()
             trace["soft_thresholds"] = thresholds.soft_dict()
+            trace["provider"] = settings.get(CONF_PROVIDER, PROVIDER_LAYA)
             targets = build_targets(self.hass, settings, language)
             area = caller_area(self.hass, user_input.device_id or settings.get(CONF_SATELLITE))
-            client = LayaClient(async_get_clientsession(self.hass), settings[CONF_URL], settings.get(CONF_API_KEY, ""))
+            client = LayaClient(async_get_clientsession(self.hass), settings[CONF_URL],
+                                settings.get(CONF_API_KEY, ""),
+                                settings.get(CONF_PROVIDER, PROVIDER_LAYA))
             self.metrics["caller_area"] = area
 
             async def ask(request, name):

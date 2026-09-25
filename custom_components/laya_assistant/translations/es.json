@@ -3,10 +3,11 @@
     "step": {
       "user": {
         "title": "Conectar con Laya",
-        "description": "Introduce una dirección de Laya accesible desde Home Assistant. Instala primero el servidor Laya.",
+        "description": "Elige Laya local o Jev en la nube e introduce la URL y la clave API si hace falta.",
         "data": {
-          "url": "URL del servidor Laya",
-          "api_key": "Clave API (opcional)"
+          "url": "URL del servidor de decisiones",
+          "api_key": "Clave API (opcional)",
+          "provider": "Proveedor de decisiones (Laya local o Jev en la nube)"
         }
       },
       "entities": {
@@ -33,9 +34,10 @@
       }
     },
     "error": {
-      "cannot_connect": "No se puede conectar a un servidor Laya compatible.",
+      "cannot_connect": "No se puede conectar al servidor de decisiones elegido.",
       "invalid_url": "Introduce solo la URL del servidor, por ejemplo http://host:8000.",
-      "select_entities": "Selecciona al menos una entidad y no la incluyas en dos grupos de control."
+      "select_entities": "Selecciona al menos una entidad y no la incluyas en dos grupos de control.",
+      "api_key_required": "Jev requiere una clave API de TypeSafe."
     },
     "abort": {
       "already_configured": "Este servidor Laya ya está configurado."

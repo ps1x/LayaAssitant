@@ -3,10 +3,11 @@
     "step": {
       "user": {
         "title": "连接 Laya",
-        "description": "输入 Home Assistant 可访问的 Laya 地址。请先安装 Laya 服务器。",
+        "description": "选择本地 Laya 或云端 Jev，然后填写地址和所需的 API 密钥。",
         "data": {
-          "url": "Laya 服务器地址",
-          "api_key": "API 密钥（可选）"
+          "url": "决策服务器地址",
+          "api_key": "API 密钥（可选）",
+          "provider": "决策服务（本地 Laya 或云端 Jev）"
         }
       },
       "entities": {
@@ -33,9 +34,10 @@
       }
     },
     "error": {
-      "cannot_connect": "无法连接到兼容的 Laya 服务器。",
+      "cannot_connect": "无法连接所选决策服务器。",
       "invalid_url": "只输入服务器地址，例如 http://host:8000。",
-      "select_entities": "至少选择一个实体，且不要在两个控制组中重复选择。"
+      "select_entities": "至少选择一个实体，且不要在两个控制组中重复选择。",
+      "api_key_required": "Jev 需要 TypeSafe API 密钥。"
     },
     "abort": {
       "already_configured": "此 Laya 服务器已配置。"

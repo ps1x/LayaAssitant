@@ -31,7 +31,7 @@ def summarize_answers(answers: dict) -> dict[str, dict]:
 
 def format_debug(trace: dict, metrics: dict) -> str:
     """Append human-readable diagnostics without raw requests or credentials."""
-    parts = [f"DEBUG status={metrics.get('status', 'unknown')}"]
+    parts = [f"DEBUG provider={trace.get('provider', 'laya')} status={metrics.get('status', 'unknown')}"]
     if trace.get("reason"):
         parts[0] += f" reason={trace['reason']}"
     for stage, questions in trace.get("stages", {}).items():
