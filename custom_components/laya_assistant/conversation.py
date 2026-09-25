@@ -43,7 +43,7 @@ class LayaConversation(conversation.ConversationEntity):
     @property
     def supported_languages(self):
         # HA supplies its current language; unsupported locales use English.
-        return ["*"]
+        return "*"
 
     @property
     def supported_features(self):
