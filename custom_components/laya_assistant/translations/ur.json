@@ -19,7 +19,16 @@
           "climates": "ماحولیاتی آلات (آن/آف)",
           "temperature_sensors": "درجہ حرارت سینسر یا ماحولیاتی آلات",
           "satellite_device_id": "ڈیفالٹ صوتی سیٹلائٹ (اختیاری)",
-          "spoken_names": "بولے جانے والے نام (JSON، اختیاری)"
+          "spoken_names": "بولے جانے والے نام (JSON، اختیاری)",
+          "debug": "جواب میں تشخیصی معلومات اور احتمالات شامل کریں",
+          "domain_confidence": "زمرہ: کم از کم اعتماد",
+          "domain_probability": "زمرہ: منتخب ہونے کا کم از کم امکان",
+          "target_confidence": "ہدف: کم از کم اعتماد",
+          "target_probability": "ہدف: منتخب ہونے کا کم از کم امکان",
+          "action_confidence": "عمل: کم از کم اعتماد",
+          "action_probability": "عمل: منتخب ہونے کا کم از کم امکان",
+          "temperature_confidence": "نامزد کمرے کا درجہ حرارت: کم از کم اعتماد",
+          "temperature_probability": "درجہ حرارت: منتخب ہونے کا کم از کم امکان"
         }
       }
     },
@@ -43,7 +52,16 @@
           "climates": "ماحولیاتی آلات (آن/آف)",
           "temperature_sensors": "درجہ حرارت سینسر یا ماحولیاتی آلات",
           "satellite_device_id": "ڈیفالٹ صوتی سیٹلائٹ (اختیاری)",
-          "spoken_names": "بولے جانے والے نام (JSON، اختیاری)"
+          "spoken_names": "بولے جانے والے نام (JSON، اختیاری)",
+          "debug": "جواب میں تشخیصی معلومات اور احتمالات شامل کریں",
+          "domain_confidence": "زمرہ: کم از کم اعتماد",
+          "domain_probability": "زمرہ: منتخب ہونے کا کم از کم امکان",
+          "target_confidence": "ہدف: کم از کم اعتماد",
+          "target_probability": "ہدف: منتخب ہونے کا کم از کم امکان",
+          "action_confidence": "عمل: کم از کم اعتماد",
+          "action_probability": "عمل: منتخب ہونے کا کم از کم امکان",
+          "temperature_confidence": "نامزد کمرے کا درجہ حرارت: کم از کم اعتماد",
+          "temperature_probability": "درجہ حرارت: منتخب ہونے کا کم از کم امکان"
         }
       }
     }

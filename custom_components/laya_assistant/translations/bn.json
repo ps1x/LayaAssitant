@@ -19,7 +19,16 @@
           "climates": "জলবায়ু যন্ত্র (চালু/বন্ধ)",
           "temperature_sensors": "তাপমাত্রা সেন্সর বা জলবায়ু যন্ত্র",
           "satellite_device_id": "ডিফল্ট ভয়েস স্যাটেলাইট (ঐচ্ছিক)",
-          "spoken_names": "কথ্য নাম (JSON, ঐচ্ছিক)"
+          "spoken_names": "কথ্য নাম (JSON, ঐচ্ছিক)",
+          "debug": "উত্তরে ডিবাগ তথ্য ও সম্ভাবনা যোগ করুন",
+          "domain_confidence": "বিভাগ: ন্যূনতম আস্থা",
+          "domain_probability": "বিভাগ: ন্যূনতম নির্বাচিত সম্ভাবনা",
+          "target_confidence": "লক্ষ্য: ন্যূনতম আস্থা",
+          "target_probability": "লক্ষ্য: ন্যূনতম নির্বাচিত সম্ভাবনা",
+          "action_confidence": "কাজ: ন্যূনতম আস্থা",
+          "action_probability": "কাজ: ন্যূনতম নির্বাচিত সম্ভাবনা",
+          "temperature_confidence": "উল্লেখিত ঘরের তাপমাত্রা: ন্যূনতম আস্থা",
+          "temperature_probability": "তাপমাত্রা: ন্যূনতম নির্বাচিত সম্ভাবনা"
         }
       }
     },
@@ -43,7 +52,16 @@
           "climates": "জলবায়ু যন্ত্র (চালু/বন্ধ)",
           "temperature_sensors": "তাপমাত্রা সেন্সর বা জলবায়ু যন্ত্র",
           "satellite_device_id": "ডিফল্ট ভয়েস স্যাটেলাইট (ঐচ্ছিক)",
-          "spoken_names": "কথ্য নাম (JSON, ঐচ্ছিক)"
+          "spoken_names": "কথ্য নাম (JSON, ঐচ্ছিক)",
+          "debug": "উত্তরে ডিবাগ তথ্য ও সম্ভাবনা যোগ করুন",
+          "domain_confidence": "বিভাগ: ন্যূনতম আস্থা",
+          "domain_probability": "বিভাগ: ন্যূনতম নির্বাচিত সম্ভাবনা",
+          "target_confidence": "লক্ষ্য: ন্যূনতম আস্থা",
+          "target_probability": "লক্ষ্য: ন্যূনতম নির্বাচিত সম্ভাবনা",
+          "action_confidence": "কাজ: ন্যূনতম আস্থা",
+          "action_probability": "কাজ: ন্যূনতম নির্বাচিত সম্ভাবনা",
+          "temperature_confidence": "উল্লেখিত ঘরের তাপমাত্রা: ন্যূনতম আস্থা",
+          "temperature_probability": "তাপমাত্রা: ন্যূনতম নির্বাচিত সম্ভাবনা"
         }
       }
     }

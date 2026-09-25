@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import math
 import re
 
-from .const import MIN_CONFIDENCE, MIN_PROBABILITY
+from .const import THRESHOLD_DEFAULTS
 from .locale import WHOLE_HOME_TERMS, get_locale
 
 
@@ -19,9 +19,51 @@ class Target:
     entities: tuple[str, ...]
     area: str | None
     kind: str
+    aliases: tuple[str, ...] = ()
 
 
-def choice(answer: object) -> str | None:
+@dataclass(frozen=True)
+class Thresholds:
+    """Per-stage gates; defaults preserve the original routing behavior."""
+
+    domain_confidence: float = 0.8
+    domain_probability: float = 0.8
+    target_confidence: float = 0.8
+    target_probability: float = 0.8
+    action_confidence: float = 0.8
+    action_probability: float = 0.8
+    temperature_confidence: float = 0.3
+    temperature_probability: float = 0.8
+
+    @classmethod
+    def from_settings(cls, settings: dict) -> "Thresholds":
+        values = {}
+        for key, default in THRESHOLD_DEFAULTS.items():
+            value = settings.get(key, default)
+            if isinstance(value, bool) or not isinstance(value, (int, float)) \
+                    or not math.isfinite(value) or not 0 <= value <= 1:
+                raise ValueError(f"Invalid Laya threshold: {key}")
+            values[key] = float(value)
+        return cls(**values)
+
+    def as_dict(self) -> dict[str, float]:
+        return {key: getattr(self, key) for key in THRESHOLD_DEFAULTS}
+
+    def soft_dict(self) -> dict[str, float]:
+        """Thresholds for text-anchored exceptions, derived from user settings."""
+        return {
+            "light_domain_confidence": max(0, self.domain_confidence - 0.2),
+            "light_domain_probability": self.domain_probability,
+            "room_target_confidence": max(0, self.target_confidence - 0.15),
+            "room_target_probability": min(1, self.target_probability + 0.1),
+            "fixture_target_confidence": max(0, self.target_confidence - 0.05),
+            "fixture_target_probability": min(1, self.target_probability + 0.1),
+            "unnamed_temperature_confidence": min(1, self.temperature_confidence + 0.3),
+        }
+
+
+def choice(answer: object, min_confidence: float = 0.8,
+           min_probability: float = 0.8) -> str | None:
     """Accept only a finite, high-confidence selected choice."""
     if not isinstance(answer, dict) or answer.get("type") != "choice":
         return None
@@ -31,7 +73,7 @@ def choice(answer: object) -> str | None:
         return None
     probability = probabilities.get(selected)
     confidence = answer.get("confidence")
-    for number, threshold in ((probability, MIN_PROBABILITY), (confidence, MIN_CONFIDENCE)):
+    for number, threshold in ((probability, min_probability), (confidence, min_confidence)):
         if isinstance(number, bool) or not isinstance(number, (int, float)):
             return None
         if not math.isfinite(number) or not threshold <= number <= 1:
@@ -153,14 +195,18 @@ def is_light_request(text: str, language: str | None = None) -> bool:
     return any(term.casefold() in words for term in locale.light_terms)
 
 
-def selected_domain(answer: object, text: str, language: str | None = None) -> str | None:
-    strict = choice(answer)
+def selected_domain(answer: object, text: str, language: str | None = None,
+                    thresholds: Thresholds | None = None) -> str | None:
+    gates = thresholds or Thresholds()
+    strict = choice(answer, gates.domain_confidence, gates.domain_probability)
     if strict:
         return strict
     # A direct spoken light command anchors a hesitant on/off choice; later
     # target and action stages still have to agree and pass their own checks.
     if explicit_action(text, language) and is_light_request(text, language):
-        soft = _soft_choice(answer, 0.6, 0.8)
+        soft_gates = gates.soft_dict()
+        soft = _soft_choice(answer, soft_gates["light_domain_confidence"],
+                            soft_gates["light_domain_probability"])
         if soft == "on_off":
             return soft
     return None
@@ -178,19 +224,20 @@ def is_specific_light_request(text: str, individuals: list[Target], area: str | 
     for target in individuals:
         if area and target.area != area:
             continue
-        name_words = {word for word in _words(target.label)
+        name_words = {word for name in (target.label, *target.aliases) for word in _words(name)
                       if word not in ignored and word not in area_words
                       and not any(word.startswith(stem) for stem in area_stems)}
         for token in name_words:
             if len(token) >= 4 and any(word.startswith(token[:4]) for word in text_words):
                 return True
         if locale.code == "zh":
-            descriptor = target.label.casefold().replace((area or "").casefold(), "")
-            for term in locale.light_terms:
-                descriptor = descriptor.replace(term.casefold(), "")
-            descriptor = descriptor.strip()
-            if descriptor and descriptor in text.casefold():
-                return True
+            for name in (target.label, *target.aliases):
+                descriptor = name.casefold().replace((area or "").casefold(), "")
+                for term in locale.light_terms:
+                    descriptor = descriptor.replace(term.casefold(), "")
+                descriptor = descriptor.strip()
+                if descriptor and descriptor in text.casefold():
+                    return True
     return False
 
 
@@ -276,6 +323,8 @@ def target_request(text: str, domain: str, candidates: list[Target], caller_area
                 label += f", общий свет {_russian_genitive(target.area)}"
             elif "верхн" in label.casefold():
                 label += ", люстра, потолочный свет"
+        if target.aliases:
+            label += " / " + " / ".join(target.aliases)
         criteria[target.key] = label
     questions = {"target": {
             "type": "choice", "instructions": instructions,
@@ -296,7 +345,9 @@ def target_request(text: str, domain: str, candidates: list[Target], caller_area
 
 
 def selected_target(answers: dict, text: str, candidates: list[Target],
-                    language: str | None = None) -> Target | None:
+                    language: str | None = None,
+                    thresholds: Thresholds | None = None) -> Target | None:
+    gates = thresholds or Thresholds()
     first = answers.get("target")
     second = answers.get("target_check")
     raw = [item.get("choice") for item in (first, second) if isinstance(item, dict)]
@@ -306,23 +357,33 @@ def selected_target(answers: dict, text: str, candidates: list[Target],
     target = next((item for item in candidates if item.key == key), None)
     if target is None:
         return None
-    valid = [item for item in (first, second) if item is not None and choice(item) == key]
+    normal_confidence = (max(gates.target_confidence, gates.temperature_confidence)
+                         if target.kind == "temperature" else gates.target_confidence)
+    normal_probability = (max(gates.target_probability, gates.temperature_probability)
+                          if target.kind == "temperature" else gates.target_probability)
+    valid = [item for item in (first, second) if item is not None and
+             choice(item, normal_confidence, normal_probability) == key]
     if valid:
         return target
     named_area = mentioned_area(text, {item.area for item in candidates if item.area})
+    soft_gates = gates.soft_dict()
     if target.kind == "temperature" and len(candidates) == 1:
         if named_area and target.area == named_area:
-            return target if _soft_choice(first, 0.3, 0.8) == key else None
+            return target if _soft_choice(first, gates.temperature_confidence,
+                                          gates.temperature_probability) == key else None
         if not named_area:
-            return target if _soft_choice(first, 0.6, 0.8) == key else None
+            return target if _soft_choice(first, soft_gates["unnamed_temperature_confidence"],
+                                          gates.temperature_probability) == key else None
     if not named_area or target.area != named_area:
         return None
     best = max((item for item in (first, second) if isinstance(item, dict)),
                key=lambda item: item.get("confidence", 0))
     if target.kind == "light_group" and second is not None:
-        return target if _soft_choice(best, 0.65, 0.9) == key else None
+        return target if _soft_choice(best, soft_gates["room_target_confidence"],
+                                      soft_gates["room_target_probability"]) == key else None
     if target.kind == "light_entity" and is_specific_light_request(text, [target], named_area, language):
-        return target if _soft_choice(best, 0.75, 0.9) == key else None
+        return target if _soft_choice(best, soft_gates["fixture_target_confidence"],
+                                      soft_gates["fixture_target_probability"]) == key else None
     return None
 
 
@@ -337,17 +398,21 @@ def detail_request(text: str, domain: str, language: str | None = None) -> dict 
     return _wire(text, {"action": action, "action_check": check}, locale)
 
 
-def best_action(answers: dict, text: str, language: str | None = None) -> str | None:
+def best_action(answers: dict, text: str, language: str | None = None,
+                thresholds: Thresholds | None = None) -> str | None:
+    gates = thresholds or Thresholds()
     options = [answers.get("action"), answers.get("action_check")]
-    valid = [answer for answer in options if choice(answer) in {"turn_on", "turn_off"}]
+    valid = [answer for answer in options if choice(answer, gates.action_confidence,
+                                                   gates.action_probability) in {"turn_on", "turn_off"}]
     if not valid:
         return None
     selected = max(valid, key=lambda answer: answer["confidence"])
-    action = choice(selected)
+    action = choice(selected, gates.action_confidence, gates.action_probability)
     verb = explicit_action(text, language)
     if verb and action != verb:
         return None
-    if not verb and len(valid) == 2 and choice(valid[0]) != choice(valid[1]):
+    if not verb and len(valid) == 2 and choice(valid[0], gates.action_confidence, gates.action_probability) \
+            != choice(valid[1], gates.action_confidence, gates.action_probability):
         return None
     return action
 
@@ -361,6 +426,6 @@ def valid_target(target: Target, text: str, caller_area: str | None, targets: li
         return whole_home_request(text, language) and not area
     if not area and is_light_request(text, language) and caller_area and target.area != caller_area:
         # An explicitly configured spoken target name overrides the caller room.
-        if target.label.casefold() not in text.casefold():
+        if not any(name.casefold() in text.casefold() for name in (target.label, *target.aliases)):
             return False
     return True

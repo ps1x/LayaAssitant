@@ -18,12 +18,13 @@ for name in ("const", "routing"):
     spec.loader.exec_module(module)
 
 from laya_assistant.routing import (  # noqa: E402
-    Target, best_action, choice, domain_request, explicit_action,
+    Target, Thresholds, best_action, choice, domain_request, explicit_action,
     light_group_label, mentioned_area, selected_domain, selected_target,
     target_candidates, valid_target,
 )
 from laya_assistant.locale import LOCALES, get_locale  # noqa: E402
 from laya_assistant.aliases import parse_area_overrides, parse_spoken_names  # noqa: E402
+from laya_assistant.diagnostics import format_debug, summarize_answers  # noqa: E402
 
 
 def answer(value, confidence=0.95, probability=0.96):
@@ -138,11 +139,48 @@ class RoutingTests(unittest.TestCase):
                                          "какая температура в гостинной", [sensor], "ru"), sensor)
         self.assertIsNone(selected_target({"target": answer("e0", 0.29, 0.92)},
                                           "какая температура в гостиной", [sensor], "ru"))
+        strict_sensor = Thresholds.from_settings({"temperature_confidence": 0.95})
+        self.assertIsNone(selected_target({"target": answer("e0", 0.90, 0.96)},
+                                          "какая температура в гостиной", [sensor], "ru",
+                                          strict_sensor))
 
     def test_unassigned_lights_do_not_become_an_implicit_room_group(self):
         unassigned = [Target("e0", "Desk lamp", ("light.desk",), None, "light_entity")]
         self.assertEqual(target_candidates("turn on the lights in bedroom", "on_off",
                                            unassigned, None, "en"), [])
+
+    def test_configurable_gates_keep_action_independent(self):
+        gates = Thresholds.from_settings({"target_confidence": 0.91,
+                                          "action_confidence": 0.72,
+                                          "temperature_confidence": 0.45})
+        self.assertEqual(gates.target_confidence, 0.91)
+        self.assertIsNone(selected_target({"target": answer("g0", 0.85)},
+                                          "включи свет в детской", [self.targets[3]], "ru", gates))
+        self.assertEqual(best_action({"action": answer("turn_on", 0.75)},
+                                     "включи свет", "ru", gates), "turn_on")
+        with self.assertRaises(ValueError):
+            Thresholds.from_settings({"action_probability": float("nan")})
+        with self.assertRaises(ValueError):
+            Thresholds.from_settings({"target_confidence": -0.1})
+
+    def test_device_label_is_a_target_synonym(self):
+        target = Target("e0", "KitchenWorkZone", ("switch.work",), "Кухня",
+                        "light_entity", ("кухня рабочая зона",))
+        self.assertEqual([t.key for t in target_candidates(
+            "включи свет в рабочей зоне кухни", "on_off", [target], None, "ru")], ["e0"])
+        request = __import__("laya_assistant.routing", fromlist=["target_request"]).target_request(
+            "включи свет в рабочей зоне кухни", "on_off", [target], None, "ru")
+        self.assertIn("кухня рабочая зона", request["questions"]["target"]["criteria"]["e0"])
+
+    def test_debug_contains_all_probabilities_without_raw_request(self):
+        answers = summarize_answers({"domain": answer("temperature", 0.91, 0.93)})
+        trace = {"thresholds": Thresholds().as_dict(), "stages": {"domain": answers},
+                 "decisions": {"domain": "temperature"}}
+        speech = format_debug(trace, {"status": "answered", "domain_ms": 120, "total_ms": 125})
+        self.assertIn("temperature=0.9300", speech)
+        self.assertIn("confidence=0.9100", speech)
+        self.assertIn("domain_confidence=0.80", speech)
+        self.assertNotIn("Bearer", speech)
 
 
 if __name__ == "__main__":

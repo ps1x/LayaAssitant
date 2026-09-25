@@ -10,7 +10,16 @@ CONF_CLIMATES = "climates"
 CONF_TEMPERATURE = "temperature_sensors"
 CONF_SATELLITE = "satellite_device_id"
 CONF_SPOKEN_NAMES = "spoken_names"
+CONF_DEBUG = "debug"
+THRESHOLD_DEFAULTS = {
+    "domain_confidence": 0.8,
+    "domain_probability": 0.8,
+    "target_confidence": 0.8,
+    "target_probability": 0.8,
+    "action_confidence": 0.8,
+    "action_probability": 0.8,
+    "temperature_confidence": 0.3,
+    "temperature_probability": 0.8,
+}
 ENTITY_FIELDS = (CONF_LIGHTS, CONF_SWITCHES, CONF_FANS, CONF_CLIMATES, CONF_TEMPERATURE)
-MIN_CONFIDENCE = 0.8
-MIN_PROBABILITY = 0.8
 MAX_QUESTIONS = 48

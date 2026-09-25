@@ -19,7 +19,16 @@
           "climates": "Climatización (encender/apagar)",
           "temperature_sensors": "Sensores de temperatura o climatización",
           "satellite_device_id": "Satélite de voz predeterminado (opcional)",
-          "spoken_names": "Nombres hablados (JSON, opcional)"
+          "spoken_names": "Nombres hablados (JSON, opcional)",
+          "debug": "Incluir diagnósticos y probabilidades en las respuestas",
+          "domain_confidence": "Categoría: confianza mínima",
+          "domain_probability": "Categoría: probabilidad mínima de selección",
+          "target_confidence": "Objetivo: confianza mínima",
+          "target_probability": "Objetivo: probabilidad mínima de selección",
+          "action_confidence": "Acción: confianza mínima",
+          "action_probability": "Acción: probabilidad mínima de selección",
+          "temperature_confidence": "Temperatura de la habitación indicada: confianza mínima",
+          "temperature_probability": "Temperatura: probabilidad mínima de selección"
         }
       }
     },
@@ -43,7 +52,16 @@
           "climates": "Climatización (encender/apagar)",
           "temperature_sensors": "Sensores de temperatura o climatización",
           "satellite_device_id": "Satélite de voz predeterminado (opcional)",
-          "spoken_names": "Nombres hablados (JSON, opcional)"
+          "spoken_names": "Nombres hablados (JSON, opcional)",
+          "debug": "Incluir diagnósticos y probabilidades en las respuestas",
+          "domain_confidence": "Categoría: confianza mínima",
+          "domain_probability": "Categoría: probabilidad mínima de selección",
+          "target_confidence": "Objetivo: confianza mínima",
+          "target_probability": "Objetivo: probabilidad mínima de selección",
+          "action_confidence": "Acción: confianza mínima",
+          "action_probability": "Acción: probabilidad mínima de selección",
+          "temperature_confidence": "Temperatura de la habitación indicada: confianza mínima",
+          "temperature_probability": "Temperatura: probabilidad mínima de selección"
         }
       }
     }

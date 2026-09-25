@@ -19,7 +19,16 @@
           "climates": "Klimageräte (ein/aus)",
           "temperature_sensors": "Temperatursensoren oder Klimageräte",
           "satellite_device_id": "Standard-Sprachsatellit (optional)",
-          "spoken_names": "Gesprochene Namen (JSON, optional)"
+          "spoken_names": "Gesprochene Namen (JSON, optional)",
+          "debug": "Diagnosedaten und Wahrscheinlichkeiten in Antworten anzeigen",
+          "domain_confidence": "Bereich: Mindestkonfidenz",
+          "domain_probability": "Bereich: Mindestwahrscheinlichkeit der Auswahl",
+          "target_confidence": "Ziel: Mindestkonfidenz",
+          "target_probability": "Ziel: Mindestwahrscheinlichkeit der Auswahl",
+          "action_confidence": "Aktion: Mindestkonfidenz",
+          "action_probability": "Aktion: Mindestwahrscheinlichkeit der Auswahl",
+          "temperature_confidence": "Temperatur im genannten Raum: Mindestkonfidenz",
+          "temperature_probability": "Temperatur: Mindestwahrscheinlichkeit der Auswahl"
         }
       }
     },
@@ -43,7 +52,16 @@
           "climates": "Klimageräte (ein/aus)",
           "temperature_sensors": "Temperatursensoren oder Klimageräte",
           "satellite_device_id": "Standard-Sprachsatellit (optional)",
-          "spoken_names": "Gesprochene Namen (JSON, optional)"
+          "spoken_names": "Gesprochene Namen (JSON, optional)",
+          "debug": "Diagnosedaten und Wahrscheinlichkeiten in Antworten anzeigen",
+          "domain_confidence": "Bereich: Mindestkonfidenz",
+          "domain_probability": "Bereich: Mindestwahrscheinlichkeit der Auswahl",
+          "target_confidence": "Ziel: Mindestkonfidenz",
+          "target_probability": "Ziel: Mindestwahrscheinlichkeit der Auswahl",
+          "action_confidence": "Aktion: Mindestkonfidenz",
+          "action_probability": "Aktion: Mindestwahrscheinlichkeit der Auswahl",
+          "temperature_confidence": "Temperatur im genannten Raum: Mindestkonfidenz",
+          "temperature_probability": "Temperatur: Mindestwahrscheinlichkeit der Auswahl"
         }
       }
     }

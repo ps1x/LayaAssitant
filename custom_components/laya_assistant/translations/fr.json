@@ -19,7 +19,16 @@
           "climates": "Climatisation (marche/arrêt)",
           "temperature_sensors": "Capteurs de température ou climatisation",
           "satellite_device_id": "Satellite vocal par défaut (facultatif)",
-          "spoken_names": "Noms prononcés (JSON, facultatif)"
+          "spoken_names": "Noms prononcés (JSON, facultatif)",
+          "debug": "Inclure les diagnostics et probabilités dans les réponses",
+          "domain_confidence": "Domaine: confiance minimale",
+          "domain_probability": "Domaine: probabilité minimale de sélection",
+          "target_confidence": "Cible: confiance minimale",
+          "target_probability": "Cible: probabilité minimale de sélection",
+          "action_confidence": "Action: confiance minimale",
+          "action_probability": "Action: probabilité minimale de sélection",
+          "temperature_confidence": "Température de la pièce nommée: confiance minimale",
+          "temperature_probability": "Température: probabilité minimale de sélection"
         }
       }
     },
@@ -43,7 +52,16 @@
           "climates": "Climatisation (marche/arrêt)",
           "temperature_sensors": "Capteurs de température ou climatisation",
           "satellite_device_id": "Satellite vocal par défaut (facultatif)",
-          "spoken_names": "Noms prononcés (JSON, facultatif)"
+          "spoken_names": "Noms prononcés (JSON, facultatif)",
+          "debug": "Inclure les diagnostics et probabilités dans les réponses",
+          "domain_confidence": "Domaine: confiance minimale",
+          "domain_probability": "Domaine: probabilité minimale de sélection",
+          "target_confidence": "Cible: confiance minimale",
+          "target_probability": "Cible: probabilité minimale de sélection",
+          "action_confidence": "Action: confiance minimale",
+          "action_probability": "Action: probabilité minimale de sélection",
+          "temperature_confidence": "Température de la pièce nommée: confiance minimale",
+          "temperature_probability": "Température: probabilité minimale de sélection"
         }
       }
     }

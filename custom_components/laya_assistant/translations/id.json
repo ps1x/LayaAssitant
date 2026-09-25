@@ -19,7 +19,16 @@
           "climates": "Perangkat iklim (nyala/mati)",
           "temperature_sensors": "Sensor suhu atau perangkat iklim",
           "satellite_device_id": "Satelit suara bawaan (opsional)",
-          "spoken_names": "Nama lisan (JSON, opsional)"
+          "spoken_names": "Nama lisan (JSON, opsional)",
+          "debug": "Sertakan data debug dan probabilitas dalam jawaban",
+          "domain_confidence": "Domain: keyakinan minimum",
+          "domain_probability": "Domain: probabilitas pilihan minimum",
+          "target_confidence": "Target: keyakinan minimum",
+          "target_probability": "Target: probabilitas pilihan minimum",
+          "action_confidence": "Aksi: keyakinan minimum",
+          "action_probability": "Aksi: probabilitas pilihan minimum",
+          "temperature_confidence": "Suhu ruangan yang disebut: keyakinan minimum",
+          "temperature_probability": "Suhu: probabilitas pilihan minimum"
         }
       }
     },
@@ -43,7 +52,16 @@
           "climates": "Perangkat iklim (nyala/mati)",
           "temperature_sensors": "Sensor suhu atau perangkat iklim",
           "satellite_device_id": "Satelit suara bawaan (opsional)",
-          "spoken_names": "Nama lisan (JSON, opsional)"
+          "spoken_names": "Nama lisan (JSON, opsional)",
+          "debug": "Sertakan data debug dan probabilitas dalam jawaban",
+          "domain_confidence": "Domain: keyakinan minimum",
+          "domain_probability": "Domain: probabilitas pilihan minimum",
+          "target_confidence": "Target: keyakinan minimum",
+          "target_probability": "Target: probabilitas pilihan minimum",
+          "action_confidence": "Aksi: keyakinan minimum",
+          "action_probability": "Aksi: probabilitas pilihan minimum",
+          "temperature_confidence": "Suhu ruangan yang disebut: keyakinan minimum",
+          "temperature_probability": "Suhu: probabilitas pilihan minimum"
         }
       }
     }

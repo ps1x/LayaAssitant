@@ -73,3 +73,52 @@ for code, values in TRANSLATIONS.items():
        'abort': {'already_configured': v['already_configured']}},
       'options': {'step': {'init': {'title': v['entities_title'], 'data': fields}}}}
     (root / f'{code}.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+
+# Keep the advanced routing controls translated in every supported UI locale.
+# Values: domain, target, action, named-room temperature, temperature,
+# minimum confidence, minimum selected probability, debug switch.
+SETTINGS_LABELS = {
+    'en': ('Domain', 'Target', 'Action', 'Named room temperature', 'Temperature',
+           'minimum confidence', 'minimum selected probability', 'Include diagnostics and probabilities in replies'),
+    'ru': ('Домен', 'Цель', 'Действие', 'Температура в названной комнате', 'Температура',
+           'минимальная уверенность', 'минимальная вероятность выбора', 'Добавлять отладочные данные и вероятности в ответ'),
+    'de': ('Bereich', 'Ziel', 'Aktion', 'Temperatur im genannten Raum', 'Temperatur',
+           'Mindestkonfidenz', 'Mindestwahrscheinlichkeit der Auswahl', 'Diagnosedaten und Wahrscheinlichkeiten in Antworten anzeigen'),
+    'zh-Hans': ('类别', '目标', '操作', '指定房间的温度', '温度',
+                '最低置信度', '最低选中概率', '在回复中包含调试数据和概率'),
+    'hi': ('श्रेणी', 'लक्ष्य', 'क्रिया', 'बताए गए कमरे का तापमान', 'तापमान',
+           'न्यूनतम विश्वास', 'न्यूनतम चयन संभावना', 'उत्तर में डिबग जानकारी और संभावनाएँ जोड़ें'),
+    'es': ('Categoría', 'Objetivo', 'Acción', 'Temperatura de la habitación indicada', 'Temperatura',
+           'confianza mínima', 'probabilidad mínima de selección', 'Incluir diagnósticos y probabilidades en las respuestas'),
+    'ar': ('الفئة', 'الهدف', 'الإجراء', 'حرارة الغرفة المذكورة', 'الحرارة',
+           'الحد الأدنى للثقة', 'الحد الأدنى لاحتمال الاختيار', 'إضافة بيانات التشخيص والاحتمالات إلى الردود'),
+    'fr': ('Domaine', 'Cible', 'Action', 'Température de la pièce nommée', 'Température',
+           'confiance minimale', 'probabilité minimale de sélection', 'Inclure les diagnostics et probabilités dans les réponses'),
+    'bn': ('বিভাগ', 'লক্ষ্য', 'কাজ', 'উল্লেখিত ঘরের তাপমাত্রা', 'তাপমাত্রা',
+           'ন্যূনতম আস্থা', 'ন্যূনতম নির্বাচিত সম্ভাবনা', 'উত্তরে ডিবাগ তথ্য ও সম্ভাবনা যোগ করুন'),
+    'pt': ('Domínio', 'Alvo', 'Ação', 'Temperatura do cômodo citado', 'Temperatura',
+           'confiança mínima', 'probabilidade mínima da escolha', 'Incluir diagnóstico e probabilidades nas respostas'),
+    'id': ('Domain', 'Target', 'Aksi', 'Suhu ruangan yang disebut', 'Suhu',
+           'keyakinan minimum', 'probabilitas pilihan minimum', 'Sertakan data debug dan probabilitas dalam jawaban'),
+    'ur': ('زمرہ', 'ہدف', 'عمل', 'نامزد کمرے کا درجہ حرارت', 'درجہ حرارت',
+           'کم از کم اعتماد', 'منتخب ہونے کا کم از کم امکان', 'جواب میں تشخیصی معلومات اور احتمالات شامل کریں'),
+}
+VARIANTS = {'zh': 'zh-Hans', 'zh-CN': 'zh-Hans', 'pt-BR': 'pt'}
+for path in root.glob('*.json'):
+    code = VARIANTS.get(path.stem, path.stem)
+    labels = SETTINGS_LABELS[code]
+    fields = {
+        'debug': labels[7],
+        'domain_confidence': f'{labels[0]}: {labels[5]}',
+        'domain_probability': f'{labels[0]}: {labels[6]}',
+        'target_confidence': f'{labels[1]}: {labels[5]}',
+        'target_probability': f'{labels[1]}: {labels[6]}',
+        'action_confidence': f'{labels[2]}: {labels[5]}',
+        'action_probability': f'{labels[2]}: {labels[6]}',
+        'temperature_confidence': f'{labels[3]}: {labels[5]}',
+        'temperature_probability': f'{labels[4]}: {labels[6]}',
+    }
+    data = json.loads(path.read_text())
+    data['config']['step']['entities']['data'].update(fields)
+    data['options']['step']['init']['data'].update(fields)
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')

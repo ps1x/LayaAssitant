@@ -19,7 +19,16 @@
           "climates": "Climatização (ligar/desligar)",
           "temperature_sensors": "Sensores de temperatura ou climatização",
           "satellite_device_id": "Satélite de voz padrão (opcional)",
-          "spoken_names": "Nomes falados (JSON, opcional)"
+          "spoken_names": "Nomes falados (JSON, opcional)",
+          "debug": "Incluir diagnóstico e probabilidades nas respostas",
+          "domain_confidence": "Domínio: confiança mínima",
+          "domain_probability": "Domínio: probabilidade mínima da escolha",
+          "target_confidence": "Alvo: confiança mínima",
+          "target_probability": "Alvo: probabilidade mínima da escolha",
+          "action_confidence": "Ação: confiança mínima",
+          "action_probability": "Ação: probabilidade mínima da escolha",
+          "temperature_confidence": "Temperatura do cômodo citado: confiança mínima",
+          "temperature_probability": "Temperatura: probabilidade mínima da escolha"
         }
       }
     },
@@ -43,7 +52,16 @@
           "climates": "Climatização (ligar/desligar)",
           "temperature_sensors": "Sensores de temperatura ou climatização",
           "satellite_device_id": "Satélite de voz padrão (opcional)",
-          "spoken_names": "Nomes falados (JSON, opcional)"
+          "spoken_names": "Nomes falados (JSON, opcional)",
+          "debug": "Incluir diagnóstico e probabilidades nas respostas",
+          "domain_confidence": "Domínio: confiança mínima",
+          "domain_probability": "Domínio: probabilidade mínima da escolha",
+          "target_confidence": "Alvo: confiança mínima",
+          "target_probability": "Alvo: probabilidade mínima da escolha",
+          "action_confidence": "Ação: confiança mínima",
+          "action_probability": "Ação: probabilidade mínima da escolha",
+          "temperature_confidence": "Temperatura do cômodo citado: confiança mínima",
+          "temperature_probability": "Temperatura: probabilidade mínima da escolha"
         }
       }
     }

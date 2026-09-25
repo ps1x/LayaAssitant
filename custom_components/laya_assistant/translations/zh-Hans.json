@@ -19,7 +19,16 @@
           "climates": "空调设备（开/关）",
           "temperature_sensors": "温度传感器或空调设备",
           "satellite_device_id": "默认语音设备（可选）",
-          "spoken_names": "口语名称（JSON，可选）"
+          "spoken_names": "口语名称（JSON，可选）",
+          "debug": "在回复中包含调试数据和概率",
+          "domain_confidence": "类别: 最低置信度",
+          "domain_probability": "类别: 最低选中概率",
+          "target_confidence": "目标: 最低置信度",
+          "target_probability": "目标: 最低选中概率",
+          "action_confidence": "操作: 最低置信度",
+          "action_probability": "操作: 最低选中概率",
+          "temperature_confidence": "指定房间的温度: 最低置信度",
+          "temperature_probability": "温度: 最低选中概率"
         }
       }
     },
@@ -43,7 +52,16 @@
           "climates": "空调设备（开/关）",
           "temperature_sensors": "温度传感器或空调设备",
           "satellite_device_id": "默认语音设备（可选）",
-          "spoken_names": "口语名称（JSON，可选）"
+          "spoken_names": "口语名称（JSON，可选）",
+          "debug": "在回复中包含调试数据和概率",
+          "domain_confidence": "类别: 最低置信度",
+          "domain_probability": "类别: 最低选中概率",
+          "target_confidence": "目标: 最低置信度",
+          "target_probability": "目标: 最低选中概率",
+          "action_confidence": "操作: 最低置信度",
+          "action_probability": "操作: 最低选中概率",
+          "temperature_confidence": "指定房间的温度: 最低置信度",
+          "temperature_probability": "温度: 最低选中概率"
         }
       }
     }

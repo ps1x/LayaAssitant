@@ -14,6 +14,10 @@ generic room-light request addresses the selected lights in that HA area;
 fixture names address individual entities. Climate setpoints and unrelated HA
 services are not supported in this first release.
 
+HA labels attached to a selected entity or its device are also used as spoken
+target names. For example, a device label `kitchen work zone` helps select its
+approved light when that phrase is spoken. Labels never expand the allowlist.
+
 For devices without an HA area, assign one in HA or set an explicit area for
 each selected entity in **Spoken names**. The assistant does not guess a room
 from a device's English name or control every selected light for a room request.
@@ -66,7 +70,8 @@ make the first start slower than later starts. The add-on supports `amd64` and
 ## Safety and behavior
 
 - Control and read targets are chosen from the explicit allowlist in the config
-  flow. Names and areas are read from HA's live registries for each request.
+  flow. Names, labels, and areas are read from HA's live registries for each
+  request.
 - The normal gate requires model confidence and selected probability of at
   least 0.80. For an explicit light command, a hesitant domain choice can pass
   at 0.60/0.80. A room-light target can pass at 0.65/0.90 only when two Laya
@@ -101,6 +106,27 @@ make the first start slower than later starts. The add-on supports `amd64` and
 The entity exposes `domain_ms`, `target_ms`, `detail_ms`, `api_ms`, and
 `total_ms` attributes to help diagnose latency. A stage skipped after an early
 rejection has no timing attribute.
+
+### Debug mode and thresholds
+
+Open **Settings → Devices & services → Laya Assistant → Configure** to enable
+**Include diagnostics and probabilities in replies**. When enabled, each reply
+also includes every Laya choice, its confidence, the probability distribution,
+the accepted decision, configured thresholds, stage times, and the final status.
+The same structured details appear in `conversation.laya_assistant`'s `debug`
+attribute. Debug mode is off by default. Because the diagnostics are appended
+to the speech response, TTS will read them aloud too.
+
+The integration exposes separate confidence and selected-probability settings
+for **domain**, **target**, **action**, and **temperature** (all from 0 to 1).
+Defaults preserve the original gates: 0.80/0.80 for domain, target, and action;
+0.30/0.80 for a unique sensor in an explicitly named room. A unique sensor
+without a named room needs 0.30 more confidence. The light-command exceptions
+move with the configured domain or target values: explicit light domain uses
+0.20 less confidence; a named room light group uses 0.15 less confidence and
+0.10 more selected probability; a named fixture uses 0.05 less confidence and
+0.10 more selected probability. Derived values are clamped to 0–1. The
+allowlist, local area checks, action veto, and permission checks still apply.
 
 In a no-service-call check using a sample two-room catalog, 19 of 20 Russian
 children's-room phrases produced the expected target and action. One request

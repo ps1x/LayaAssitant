@@ -19,7 +19,16 @@
           "climates": "Climate devices (on/off)",
           "temperature_sensors": "Temperature sensors or climate devices",
           "satellite_device_id": "Default voice satellite (optional)",
-          "spoken_names": "Spoken names (JSON, optional)"
+          "spoken_names": "Spoken names (JSON, optional)",
+          "debug": "Include diagnostics and probabilities in replies",
+          "domain_confidence": "Domain: minimum confidence",
+          "domain_probability": "Domain: minimum selected probability",
+          "target_confidence": "Target: minimum confidence",
+          "target_probability": "Target: minimum selected probability",
+          "action_confidence": "Action: minimum confidence",
+          "action_probability": "Action: minimum selected probability",
+          "temperature_confidence": "Named room temperature: minimum confidence",
+          "temperature_probability": "Temperature: minimum selected probability"
         }
       }
     },
@@ -43,7 +52,16 @@
           "climates": "Climate devices (on/off)",
           "temperature_sensors": "Temperature sensors or climate devices",
           "satellite_device_id": "Default voice satellite (optional)",
-          "spoken_names": "Spoken names (JSON, optional)"
+          "spoken_names": "Spoken names (JSON, optional)",
+          "debug": "Include diagnostics and probabilities in replies",
+          "domain_confidence": "Domain: minimum confidence",
+          "domain_probability": "Domain: minimum selected probability",
+          "target_confidence": "Target: minimum confidence",
+          "target_probability": "Target: minimum selected probability",
+          "action_confidence": "Action: minimum confidence",
+          "action_probability": "Action: minimum selected probability",
+          "temperature_confidence": "Named room temperature: minimum confidence",
+          "temperature_probability": "Temperature: minimum selected probability"
         }
       }
     }

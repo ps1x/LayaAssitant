@@ -9,9 +9,11 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .client import LayaClient, LayaConnectionError, normalize_url
 from .aliases import parse_area_overrides, parse_spoken_names
 from .const import (
-    CONF_API_KEY, CONF_CLIMATES, CONF_FANS, CONF_LIGHTS, CONF_SATELLITE,
+    CONF_API_KEY, CONF_CLIMATES, CONF_DEBUG, CONF_FANS, CONF_LIGHTS, CONF_SATELLITE,
     CONF_SPOKEN_NAMES, CONF_SWITCHES, CONF_TEMPERATURE, CONF_URL, DOMAIN, ENTITY_FIELDS,
+    THRESHOLD_DEFAULTS,
 )
+from .routing import Thresholds
 
 
 def _entities_schema(current: dict | None = None) -> vol.Schema:
@@ -32,6 +34,11 @@ def _entities_schema(current: dict | None = None) -> vol.Schema:
     schema[vol.Optional(CONF_SPOKEN_NAMES, default=current.get(CONF_SPOKEN_NAMES, "{}"))] = selector.TextSelector(
         selector.TextSelectorConfig(multiline=True)
     )
+    schema[vol.Optional(CONF_DEBUG, default=current.get(CONF_DEBUG, False))] = selector.BooleanSelector()
+    for key, default in THRESHOLD_DEFAULTS.items():
+        schema[vol.Optional(key, default=current.get(key, default))] = selector.NumberSelector(
+            selector.NumberSelectorConfig(min=0, max=1, step=0.01, mode=selector.NumberSelectorMode.BOX)
+        )
     return vol.Schema(schema)
 
 
@@ -57,9 +64,11 @@ def _valid_entities(data: dict) -> bool:
         parse_area_overrides(data.get(CONF_SPOKEN_NAMES), {
             entity_id for values in selected.values() for entity_id in values
         })
+        Thresholds.from_settings(data)
     except (ValueError, TypeError):
         return False
-    return (any(selected.values()) and len(control) == len(set(control))
+    return (isinstance(data.get(CONF_DEBUG, False), bool)
+            and any(selected.values()) and len(control) == len(set(control))
             and all(len(values) == len(set(values)) for values in selected.values()))
 
 

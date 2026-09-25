@@ -19,7 +19,16 @@
           "climates": "जलवायु उपकरण (चालू/बंद)",
           "temperature_sensors": "तापमान सेंसर या जलवायु उपकरण",
           "satellite_device_id": "डिफ़ॉल्ट वॉइस उपग्रह (वैकल्पिक)",
-          "spoken_names": "बोले जाने वाले नाम (JSON, वैकल्पिक)"
+          "spoken_names": "बोले जाने वाले नाम (JSON, वैकल्पिक)",
+          "debug": "उत्तर में डिबग जानकारी और संभावनाएँ जोड़ें",
+          "domain_confidence": "श्रेणी: न्यूनतम विश्वास",
+          "domain_probability": "श्रेणी: न्यूनतम चयन संभावना",
+          "target_confidence": "लक्ष्य: न्यूनतम विश्वास",
+          "target_probability": "लक्ष्य: न्यूनतम चयन संभावना",
+          "action_confidence": "क्रिया: न्यूनतम विश्वास",
+          "action_probability": "क्रिया: न्यूनतम चयन संभावना",
+          "temperature_confidence": "बताए गए कमरे का तापमान: न्यूनतम विश्वास",
+          "temperature_probability": "तापमान: न्यूनतम चयन संभावना"
         }
       }
     },
@@ -43,7 +52,16 @@
           "climates": "जलवायु उपकरण (चालू/बंद)",
           "temperature_sensors": "तापमान सेंसर या जलवायु उपकरण",
           "satellite_device_id": "डिफ़ॉल्ट वॉइस उपग्रह (वैकल्पिक)",
-          "spoken_names": "बोले जाने वाले नाम (JSON, वैकल्पिक)"
+          "spoken_names": "बोले जाने वाले नाम (JSON, वैकल्पिक)",
+          "debug": "उत्तर में डिबग जानकारी और संभावनाएँ जोड़ें",
+          "domain_confidence": "श्रेणी: न्यूनतम विश्वास",
+          "domain_probability": "श्रेणी: न्यूनतम चयन संभावना",
+          "target_confidence": "लक्ष्य: न्यूनतम विश्वास",
+          "target_probability": "लक्ष्य: न्यूनतम चयन संभावना",
+          "action_confidence": "क्रिया: न्यूनतम विश्वास",
+          "action_probability": "क्रिया: न्यूनतम चयन संभावना",
+          "temperature_confidence": "बताए गए कमरे का तापमान: न्यूनतम विश्वास",
+          "temperature_probability": "तापमान: न्यूनतम चयन संभावना"
         }
       }
     }
