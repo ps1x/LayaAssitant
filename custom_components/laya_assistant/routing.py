@@ -310,6 +310,11 @@ def selected_target(answers: dict, text: str, candidates: list[Target],
     if valid:
         return target
     named_area = mentioned_area(text, {item.area for item in candidates if item.area})
+    if target.kind == "temperature" and len(candidates) == 1:
+        if named_area and target.area == named_area:
+            return target if _soft_choice(first, 0.4, 0.8) == key else None
+        if not named_area:
+            return target if _soft_choice(first, 0.6, 0.8) == key else None
     if not named_area or target.area != named_area:
         return None
     best = max((item for item in (first, second) if isinstance(item, dict)),

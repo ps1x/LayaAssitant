@@ -23,7 +23,7 @@ from laya_assistant.routing import (  # noqa: E402
     target_candidates, valid_target,
 )
 from laya_assistant.locale import LOCALES, get_locale  # noqa: E402
-from laya_assistant.aliases import parse_spoken_names  # noqa: E402
+from laya_assistant.aliases import parse_area_overrides, parse_spoken_names  # noqa: E402
 
 
 def answer(value, confidence=0.95, probability=0.96):
@@ -125,6 +125,24 @@ class RoutingTests(unittest.TestCase):
         self.assertEqual(parse_spoken_names(raw, "en")["area:Детская"], "lights in the children's room")
         with self.assertRaises(ValueError):
             parse_spoken_names('{"area:Детская": ["switch.any"]}', "ru")
+
+    def test_explicit_area_assignments_and_temperature_soft_gate(self):
+        raw = json.dumps({"areas": {"switch.kids_top": "Детская"}}, ensure_ascii=False)
+        self.assertEqual(parse_area_overrides(raw, {"switch.kids_top"}),
+                         {"switch.kids_top": "Детская"})
+        with self.assertRaises(ValueError):
+            parse_area_overrides(raw, {"switch.other"})
+        sensor = Target("e0", "Температура в гостиной", ("sensor.living",),
+                        "Гостиная", "temperature")
+        self.assertEqual(selected_target({"target": answer("e0", 0.42, 0.86)},
+                                         "какая температура в гостиной", [sensor], "ru"), sensor)
+        self.assertIsNone(selected_target({"target": answer("e0", 0.35, 0.92)},
+                                          "какая температура в гостиной", [sensor], "ru"))
+
+    def test_unassigned_lights_do_not_become_an_implicit_room_group(self):
+        unassigned = [Target("e0", "Desk lamp", ("light.desk",), None, "light_entity")]
+        self.assertEqual(target_candidates("turn on the lights in bedroom", "on_off",
+                                           unassigned, None, "en"), [])
 
 
 if __name__ == "__main__":

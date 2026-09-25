@@ -14,6 +14,10 @@ generic room-light request addresses the selected lights in that HA area;
 fixture names address individual entities. Climate setpoints and unrelated HA
 services are not supported in this first release.
 
+For devices without an HA area, assign one in HA or set an explicit area for
+each selected entity in **Spoken names**. The assistant does not guess a room
+from a device's English name or control every selected light for a room request.
+
 The assistant automatically uses the language of the Home Assistant Assist
 request. The 2026 top ten by total speakers are supported: English, Mandarin
 Chinese, Hindi, Spanish, Modern Standard Arabic, French, Bengali, Portuguese,
@@ -68,7 +72,9 @@ make the first start slower than later starts. The add-on supports `amd64` and
   at 0.60/0.80. A room-light target can pass at 0.65/0.90 only when two Laya
   target questions agree and the spoken room matches the approved HA area; a
   named fixture can pass at 0.75/0.90 only when its name and area match the
-  request. The action still requires 0.80/0.80. Unavailable entities, unlisted
+  request. A unique read-only temperature sensor can pass at 0.40/0.80 when its
+  configured room is explicitly named, or at 0.60/0.80 for an unnamed room.
+  The action still requires 0.80/0.80. Unavailable entities, unlisted
   targets, ambiguous rooms, and contradictory action words are rejected before
   a service call.
 - Control and read permissions are checked against the HA user in the request
@@ -84,6 +90,10 @@ make the first start slower than later starts. The add-on supports `amd64` and
   An `area:<HA area name>` key changes only the model's spoken description of
   that light group; an entity ID changes only its spoken description. Entity
   IDs and permissions never come from this text.
+- To assign a room when HA has no area for a selected entity, add an `areas`
+  map in the same JSON: `{"areas":{"switch.kids_top":"Детская"},"ru":{"switch.kids_top":"верхний свет в детской"}}`.
+  Only selected entity IDs are accepted. HA's own area is used when no override
+  is present; an explicit override takes precedence when one is present.
 - The configured Laya endpoint receives recognized text and descriptions of
   allowed targets. Use a Laya server you trust. Laya's model may download from
   Hugging Face on first start; inference after that is local.

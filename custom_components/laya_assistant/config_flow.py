@@ -7,7 +7,7 @@ from homeassistant.helpers import selector
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .client import LayaClient, LayaConnectionError, normalize_url
-from .aliases import parse_spoken_names
+from .aliases import parse_area_overrides, parse_spoken_names
 from .const import (
     CONF_API_KEY, CONF_CLIMATES, CONF_FANS, CONF_LIGHTS, CONF_SATELLITE,
     CONF_SPOKEN_NAMES, CONF_SWITCHES, CONF_TEMPERATURE, CONF_URL, DOMAIN, ENTITY_FIELDS,
@@ -54,6 +54,9 @@ def _valid_entities(data: dict) -> bool:
                for entity in selected[field]]
     try:
         parse_spoken_names(data.get(CONF_SPOKEN_NAMES), "en")
+        parse_area_overrides(data.get(CONF_SPOKEN_NAMES), {
+            entity_id for values in selected.values() for entity_id in values
+        })
     except (ValueError, TypeError):
         return False
     return (any(selected.values()) and len(control) == len(set(control))

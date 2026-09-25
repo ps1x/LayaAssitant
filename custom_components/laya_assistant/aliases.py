@@ -32,3 +32,18 @@ def parse_spoken_names(value: str | None, language: str) -> dict[str, str]:
     labels.update(nested.get("*", {}))
     labels.update(nested.get(get_locale(language).code, {}))
     return labels
+
+
+def parse_area_overrides(value: str | None, allowed_entities: set[str]) -> dict[str, str]:
+    """Read explicit room assignments for allowlisted entities lacking HA areas."""
+    raw = json.loads(value or "{}")
+    if not isinstance(raw, dict):
+        raise ValueError("spoken names must be a JSON object")
+    areas = raw.get("areas", {})
+    if not isinstance(areas, dict) or len(areas) > 256:
+        raise ValueError("areas must be a JSON object with at most 256 entities")
+    if any(not isinstance(entity_id, str) or entity_id not in allowed_entities
+           or not isinstance(area, str) or not area.strip() or len(area) > 80
+           for entity_id, area in areas.items()):
+        raise ValueError("area assignments must refer to selected entities")
+    return {entity_id: area.strip() for entity_id, area in areas.items()}

@@ -4,7 +4,7 @@ from collections import defaultdict
 
 from homeassistant.helpers import area_registry, device_registry, entity_registry
 
-from .aliases import parse_spoken_names
+from .aliases import parse_area_overrides, parse_spoken_names
 from .const import (
     CONF_CLIMATES, CONF_FANS, CONF_LIGHTS, CONF_SPOKEN_NAMES, CONF_SWITCHES, CONF_TEMPERATURE,
 )
@@ -25,6 +25,10 @@ def build_targets(hass, options: dict, language: str = "en") -> list[Target]:
     dr = device_registry.async_get(hass)
     ar = area_registry.async_get(hass)
     aliases = parse_spoken_names(options.get(CONF_SPOKEN_NAMES), language)
+    selected_entities = {entity_id for field in (
+        CONF_LIGHTS, CONF_SWITCHES, CONF_FANS, CONF_CLIMATES, CONF_TEMPERATURE
+    ) for entity_id in options.get(field, [])}
+    area_overrides = parse_area_overrides(options.get(CONF_SPOKEN_NAMES), selected_entities)
     entries = []
     allowed = {
         CONF_LIGHTS: {"light", "switch"}, CONF_SWITCHES: {"switch"},
@@ -47,7 +51,7 @@ def build_targets(hass, options: dict, language: str = "en") -> list[Target]:
             area_id = (reg.area_id if reg else None) or (device.area_id if device else None)
             area = ar.async_get_area(area_id) if area_id else None
             name = aliases.get(entity_id) or (reg.name if reg and reg.name else None) or state.name or entity_id
-            entries.append((entity_id, name, area.name if area else None, kind))
+            entries.append((entity_id, name, area_overrides.get(entity_id) or (area.name if area else None), kind))
 
     targets = []
     lighting_by_area = defaultdict(list)
