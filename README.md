@@ -34,9 +34,9 @@ each selected entity in **Spoken names**. The assistant does not guess a room
 from a device's English name or control every selected light for a room request.
 
 The assistant automatically uses the language of the Home Assistant Assist
-request. The 2026 top ten by total speakers are supported: English, Mandarin
-Chinese, Hindi, Spanish, Modern Standard Arabic, French, Bengali, Portuguese,
-Indonesian, and Urdu. Russian and German are included too, for **12 languages**.
+request. Supported languages include English, Mandarin Chinese, Hindi,
+Spanish, Modern Standard Arabic, French, Bengali, Portuguese, Indonesian,
+Urdu, German, and Russian.
 If HA uses another language, assistant prompts and replies fall back to
 English. The integration includes matching UI translations; the STT and TTS
 engines selected in an Assist pipeline must also support that language.
@@ -121,12 +121,12 @@ make the first start slower than later starts. The add-on supports `amd64` and
   lamp changed state.
 - For uncommon area names or inflected forms, use **Spoken names** in the
   integration options. It accepts JSON such as
-  `{"ru":{"area:Детская":"свет в детской","switch.kids_top":"верхний свет в детской"}}`.
+  `{"en":{"area:Kitchen":"kitchen lights","switch.kitchen_ceiling":"kitchen ceiling light"}}`.
   An `area:<HA area name>` key changes only the model's spoken description of
   that light group; an entity ID changes only its spoken description. Entity
   IDs and permissions never come from this text.
 - To assign a room when HA has no area for a selected entity, add an `areas`
-  map in the same JSON: `{"areas":{"switch.kids_top":"Детская"},"ru":{"switch.kids_top":"верхний свет в детской"}}`.
+  map in the same JSON: `{"areas":{"switch.kitchen_ceiling":"Kitchen"},"en":{"switch.kitchen_ceiling":"kitchen ceiling light"}}`.
   Only selected entity IDs are accepted. HA's own area is used when no override
   is present; an explicit override takes precedence when one is present.
 - The configured Laya endpoint receives recognized text and descriptions of
@@ -160,12 +160,6 @@ word from just one approved light name or HA label agree with Laya's choice,
 the target gate uses 0.60 less confidence and 0.30 less selected probability.
 Derived values are clamped to 0–1. The
 allowlist, local area checks, action veto, and permission checks still apply.
-
-In a no-service-call check using a sample two-room catalog, 19 of 20 Russian
-children's-room phrases produced the expected target and action. One request
-(`погаси свет в детской`) was rejected at the action gate. One sample command
-per supported language also reached the expected target and action. These are
-smoke checks, not a measured accuracy benchmark or a physical light test.
 
 ## Development
 
