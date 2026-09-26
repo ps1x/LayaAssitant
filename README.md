@@ -1,14 +1,25 @@
 # Laya Assistant
 
-Laya Assistant is a local [Home Assistant](https://www.home-assistant.io/)
-conversation agent. It asks a [Laya](https://pypi.org/project/laya/) server
-three small questions in sequence: **capability → approved target → action**.
+![Validate](https://github.com/ps1x/LayaAssitant/actions/workflows/validate.yml/badge.svg)
+[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=ps1x&repository=LayaAssitant&category=integration)
+
+Laya Assistant is a [Home Assistant](https://www.home-assistant.io/)
+conversation agent that can use **self-hosted [Laya](https://pypi.org/project/laya/)**
+or **cloud [Jev](https://typesafe.ai/)** for decisions. It asks the selected
+provider three small questions in sequence: **capability → approved target →
+action**.
 Only entities selected in the integration's configuration are available to the
-assistant. Laya cannot submit an arbitrary Home Assistant entity ID or service.
+assistant. The decision provider cannot submit an arbitrary Home Assistant
+entity ID or service.
+
+| Provider | Where decisions run | What you need |
+| --- | --- | --- |
+| **Laya** (default) | Your own server; inference stays local after the model download | The included Laya Server app, Compose setup, or a compatible Laya endpoint |
+| **Jev** | TypeSafe cloud | Internet access and a TypeSafe API key; no local model server |
 
 The integration can turn selected lights, switches, fans, and climate devices
-on or off; read selected temperature
-sensors; and asking the current time. Lighting switches belong in the **Lights**
+on or off; read selected temperature sensors; and answer current-time questions.
+Lighting switches belong in the **Lights**
 selector. Switches used for other purposes belong in **Other switches**. A
 generic room-light request addresses the selected lights in that HA area;
 fixture names address individual entities. Climate setpoints and unrelated HA
@@ -30,21 +41,32 @@ If HA uses another language, assistant prompts and replies fall back to
 English. The integration includes matching UI translations; the STT and TTS
 engines selected in an Assist pipeline must also support that language.
 
-Laya is the default local decision provider. **Jev** is an optional cloud
-provider using the same System One choice API. Add a second Laya Assistant
-integration entry, choose **Jev**, enter `https://api.typesafe.ai` and a
-TypeSafe API key, then choose **Laya Assistant (Jev)** in a separate Assist
-pipeline. It uses `jev-latest` and sends the recognized request and approved
-target descriptions to TypeSafe. The existing Laya entry and pipeline remain
-local and available. Jev needs Internet access and an API key.
+Both providers use the System One choice API. You can add a separate
+integration entry for each and select either conversation agent in an Assist
+pipeline. Jev uses `jev-latest` and sends recognized text and descriptions of
+approved targets to TypeSafe; Laya keeps those decisions on your server.
 
 ## Install
 
 The Home Assistant integration and the Laya model server are separate parts.
+Add `https://github.com/ps1x/LayaAssitant` in HACS as a custom
+**Integration** repository, install **Laya Assistant**, and restart Home
+Assistant. The HACS badge above opens the repository after it has been added.
+
 HACS manages the integration; the optional Laya Server app (formerly add-on)
 downloads the model and runs it on HA OS or Supervised installations. Home
 Assistant Container users can use the included Compose file or an existing
 compatible Laya server. HACS cannot start containers on the HA host.
+
+### Jev: no local model server
+
+1. Install the integration through HACS as described above.
+2. In **Settings → Devices & services → Add integration**, choose **Laya
+   Assistant**, select **Jev**, enter `https://api.typesafe.ai` and your
+   TypeSafe API key, then select the entities it may control or read.
+3. In **Settings → Voice assistants**, choose **Laya Assistant (Jev)** as the
+   conversation agent in an Assist pipeline. You can keep a separate pipeline
+   using local Laya.
 
 ### Home Assistant OS or Supervised
 
@@ -52,8 +74,7 @@ compatible Laya server. HACS cannot start containers on the HA host.
 2. Install **Laya Server**. The first start downloads the multilingual model.
    Wait for the server-ready line in its log. Set an API key if you expose port
    8000 beyond your trusted LAN.
-3. In HACS, add the same URL as a custom **Integration** repository and install
-   **Laya Assistant**. Restart Home Assistant.
+3. Install the integration through HACS as described above.
 4. In **Settings → Devices & services → Add integration**, choose **Laya
    Assistant**. Choose **Laya** and enter `http://<HA-host-address>:8000` and
    the matching API key.
@@ -83,7 +104,7 @@ make the first start slower than later starts. The add-on supports `amd64` and
   request.
 - The normal gate requires model confidence and selected probability of at
   least 0.80. For an explicit light command, a hesitant domain choice can pass
-  at 0.60/0.80. A room-light target can pass at 0.65/0.90 only when two Laya
+  at 0.60/0.80. A room-light target can pass at 0.65/0.90 only when two
   target questions agree and the spoken room matches the approved HA area; a
   named fixture can pass at 0.75/0.90 only when its name and area match the
   request. A unique read-only temperature sensor can pass at 0.30/0.80 when its
@@ -120,7 +141,7 @@ rejection has no timing attribute.
 
 Open **Settings → Devices & services → Laya Assistant → Configure** to enable
 **Include diagnostics and probabilities in replies**. When enabled, each reply
-also includes every Laya choice, its confidence, the probability distribution,
+also includes every provider choice, its confidence, the probability distribution,
 the accepted decision, configured thresholds, stage times, and the final status.
 The same structured details appear in `conversation.laya_assistant`'s `debug`
 attribute. Debug mode is off by default. Because the diagnostics are appended

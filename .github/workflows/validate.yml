@@ -14,6 +14,11 @@ jobs:
       - uses: hacs/action@main
         with:
           category: integration
+  hassfest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: home-assistant/actions/hassfest@master
   routing:
     runs-on: ubuntu-latest
     steps:
